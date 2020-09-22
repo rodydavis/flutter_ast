@@ -1,0 +1,194 @@
+library widgets;
+
+import 'dart:convert';
+import 'dart:core';
+
+import 'package:flutter/material.dart';
+{{#imports}}
+import '{{path}}';
+{{/imports}}
+
+import 'index.dart';
+import 'enums.dart';
+
+export 'index.dart';
+export 'enums.dart';
+
+typedef WidgetUpdate = void Function(Map<String, dynamic> data);
+
+
+class DynamicWidget extends GeneratedStatelessWidget {
+  DynamicWidget(this.widgetData, this.onUpdate);
+
+  final Map<String, dynamic> widgetData;
+
+  final WidgetUpdate onUpdate;
+
+  @override
+  GeneratedStatelessWidget get base {
+    final String name = widgetData['name'];
+    switch (name) {
+      {{#widgets}}
+      case '{{name}}':
+        return {{name}}Render(widgetData, (val){
+          _update((data){
+            data = val;
+          });
+        });
+      {{/widgets}}
+      default:
+        break;
+    }
+    return null;
+  }
+
+  void _update(WidgetUpdate modify) {
+    Map<String, dynamic> _data = clone(widgetData);
+    modify(_data);
+    onUpdate(_data);
+  }
+
+  @override
+  Map<String, dynamic> toJson() => base?.toJson();
+
+  @override
+  Map<String, WidgetProp> get properties => base?.properties;
+  
+  @override
+  String generate() => base?.generate();
+
+  @override
+  Widget render(BuildContext context) {
+    return base?.build(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return render(context) ?? Container();
+  }
+}
+
+abstract class GeneratedStatelessWidget extends StatelessWidget {
+  Map<String, dynamic> toJson();
+  Map<String, WidgetProp> get properties;
+  String generate();
+  Map<String, dynamic> get widgetData;
+  void Function(Map<String, dynamic>) onUpdate;
+  Map<String, dynamic> get params => widgetData['params'];
+  Widget render(BuildContext context);
+}
+
+class WidgetProp {
+  final String name, type;
+  final dynamic value;
+  const WidgetProp(this.name, this.type, {this.value});
+}
+
+dynamic clone(Object val) => json.decode(json.encode(val));
+
+class Core<T> extends Object {
+  Core(this.data, this.onUpdate, [this.fallback]);
+
+  dynamic data;
+  final WidgetUpdate onUpdate;
+
+  bool get hasValue => data != null && fallback != null;
+
+  final T fallback;
+
+  T get value {
+    if (hasValue) {
+      return fallback;
+    }
+    return data;
+  }
+
+  set value(T val) {
+    data = val;
+    onUpdate(data);
+  }
+
+  dynamic toJson() => value;
+
+  String get description => data.toString();
+}
+
+class boolType extends Core<bool> {
+  boolType(data, WidgetUpdate onUpdate, [bool fallback]) : super(data, onUpdate, fallback);
+}
+
+class intType extends Core<int> {
+  intType(data, WidgetUpdate onUpdate, [int fallback]) : super(data, onUpdate, fallback);
+}
+
+class numType extends Core<num> {
+  numType(data, WidgetUpdate onUpdate, [num fallback]) : super(data, onUpdate, fallback);
+}
+
+class doubleType extends Core<double> {
+  doubleType(data, WidgetUpdate onUpdate, [double fallback]) : super(data, onUpdate, fallback);
+}
+
+class dynamicType extends Core<dynamic> {
+  dynamicType(data, WidgetUpdate onUpdate, [dynamic fallback]) : super(data, onUpdate, fallback);
+}
+
+class StringType extends Core<String> {
+  StringType(data, WidgetUpdate onUpdate, [String fallback]) : super(data, onUpdate, fallback);
+}
+
+class MapType extends Core<Map<String, dynamic>> {
+  MapType(data, WidgetUpdate onUpdate, [Map<String, dynamic> fallback]) : super(data, onUpdate, fallback);
+}
+
+class WidgetType extends Core<Widget> {
+  WidgetType(data, WidgetUpdate onUpdate, [Widget fallback]) : super(data, onUpdate, fallback);
+}
+
+class ListType extends Core<List> {
+  ListType(data, WidgetUpdate onUpdate, [List fallback]) : super(data, onUpdate, fallback);
+}
+
+class DateTimeType extends intType {
+  DateTimeType(data, WidgetUpdate onUpdate, [DateTime fallback])
+      : super(data, onUpdate, fallback?.millisecondsSinceEpoch);
+
+  @override
+  int get value {
+    if (hasValue) {
+      DateTime _value;
+      if (int.tryParse(description) != null) {
+        _value = DateTime.fromMillisecondsSinceEpoch(int.tryParse(description));
+      } else if (DateTime.tryParse(description) != null) {
+        _value = DateTime.tryParse(description);
+      }
+      return _value?.millisecondsSinceEpoch;
+    }
+    return super.value;
+  }
+}
+
+class DurationType extends intType {
+  DurationType(data, WidgetUpdate onUpdate, [Duration fallback]) : super(data, onUpdate, fallback?.inMicroseconds);
+
+  @override
+  int get value {
+    if (hasValue) {
+      Duration _value;
+      if (int.tryParse(description) != null) {
+        _value = Duration(microseconds: int.tryParse(description));
+      } else if (data is Map) {
+        _value = Duration(
+          days: int.tryParse(data['days'].toString()),
+          hours: int.tryParse(data['hours'].toString()),
+          minutes: int.tryParse(data['minutes'].toString()),
+          seconds: int.tryParse(data['seconds'].toString()),
+          milliseconds: int.tryParse(data['milliseconds'].toString()),
+          microseconds: int.tryParse(data['microseconds'].toString()),
+        );
+      }
+      return _value?.inMicroseconds;
+    }
+    return super.value;
+  }
+}

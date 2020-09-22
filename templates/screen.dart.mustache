@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+{{#imports}}
+import '{{path}}';
+{{/imports}}
+
+class {{ class }} extends StatelessWidget {
+  const {{ class }}({Key key,
+  {{#properties}}
+    this.{{name}}{{#value}} = {{value}},{{/value}},
+  {{/properties}}
+  }) : super(key: key);
+
+  {{#properties}}
+    final {{#type}}{{type}}{{/type}} {{name}};
+  {{/properties}}
+
+  @override
+  Widget build(BuildContext context) {
+    {{^child}}
+        return Container();
+    {{/child}}
+    {{#child }}
+      return {{ child }}(
+        {{#properties}}
+          {{name}}: {{name}},
+        {{/properties}}
+      );
+    {{/child}}
+  }
+};

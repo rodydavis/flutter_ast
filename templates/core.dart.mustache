@@ -1,0 +1,58 @@
+class {{name}}Type extends Core<{{type}}> {
+  {{name}}Type(data, {{type}} fallback) : super(data, fallback);
+
+  @override
+  T get value {
+    return super.value;
+  }
+
+  @override
+  set value({{type}} val) {
+    if (hasValue) {
+      if (value is Map && value['params'] != null) {
+        {{#properties}}
+          {{#name}}
+             _{{name}} = {{type}}Type(value['params']['{{name}}']);
+          {{/name}}
+          {{#position}}
+            _{{name}} = {{type}}Type(value['params']['{{position}}']);
+          {{/position}}
+        {{/properties}}
+      } else {
+         // Try Parse
+         try {
+
+         } catch (e) {
+           
+         }
+      }
+    }
+    super.value = toJson();
+  }
+
+  {{#properties}}
+    {{#name}}
+       {{type}}Type _{{name}};
+    {{/name}}
+    {{#position}}
+      {{type}}Type _{{name}};
+    {{/position}}
+  {{/properties}}
+
+  @override
+  dynamic toJson() {
+    return {
+      'name': '{{name}}',
+      'params': {
+        {{#properties}}
+          {{#name}}
+            '{{name}}': '${this._{{name}}}',
+          {{/name}}
+          {{#position}}
+            '{{position}}': '${this._{{name}}}',
+          {{/position}}
+        {{/properties}}
+      }
+    };
+  }
+}
