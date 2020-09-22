@@ -1,4 +1,4 @@
-// ignore_for_file:uri_does_not_exist, undefined_class,extends_non_class,undefined_method,undefined_identifier,undefined_named_parameter,invalid_assignment
+//ignore_for_file: uri_does_not_exist,undefined_class,extends_non_class,undefined_named_parameter,undefined_method,undefined_identifier
 import 'package:flutter/material.dart';
 
 enum MyEnum { one, type, three }

@@ -1,2 +1,4 @@
 analyzer:
-  exclude: [build/**]
+  exclude:
+    - "build/**"
+    - "samples/*.g.dart"
