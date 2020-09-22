@@ -1,6 +1,6 @@
 # Dart/Flutter AST Generator
 
-Parse a Dart or Flutter file and return a opinionated AST for use to create a dynamic widget or runtime. Works in a browser or native.
+Parse a Dart or Flutter file and return a opinionated AST for use to create a dynamic widget or runtime. Works in a browser or native at runtime.
 
 You can pass an input as a file or directory:
 ```
