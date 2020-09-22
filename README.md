@@ -17,14 +17,14 @@ print(result.toJson());
 
 ## Features
 
-- ✅Classes
-- ✅Enums
-- ✅Logic Tree
-- ✅Flutter Support
-- ✅Top Level Methods and Variables
-- ✅Methods
-- ✅Fields
-- ✅Constructors
+- ✅ Classes
+- ✅ Enums
+- ✅ Logic Tree
+- ✅ Flutter Support
+- ✅ Top Level Methods and Variables
+- ✅ Methods
+- ✅ Fields
+- ✅ Constructors
 
 ## Example
 
