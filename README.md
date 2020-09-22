@@ -4,9 +4,9 @@ Parse a Dart or Flutter file and return a opinionated AST for use to create a dy
 
 You can pass an input as a file or directory:
 ```
-$ dart ./bin/generator.dart -p test/example.dart
+$ dart ./bin/generator.dart -p samples/example.dart
 
-$ dart ./bin/generator.dart -p test    
+$ dart ./bin/generator.dart -p samples    
 ```
 
 Or you can call the method directly:
