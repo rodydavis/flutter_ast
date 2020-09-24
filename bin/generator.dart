@@ -3,7 +3,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:build_cli_annotations/build_cli_annotations.dart';
 import "package:console/console.dart";
-import 'package:flutter_gen/flutter_gen.dart';
+import 'package:flutter_ast/flutter_ast.dart';
 
 part 'generator.g.dart';
 
