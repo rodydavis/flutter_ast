@@ -1,12 +1,12 @@
 # Dart/Flutter AST Generator
 
-Parse a Dart or Flutter file and return a opinionated AST for use to create a dynamic widget or runtime. Works in a browser or native.
+Parse a Dart or Flutter file and return a opinionated AST for use to create a dynamic widget or runtime. Works in a browser or native at runtime.
 
 You can pass an input as a file or directory:
 ```
-$ dart ./bin/generator.dart -p test/example.dart
+$ dart ./bin/generator.dart -p samples/example.dart
 
-$ dart ./bin/generator.dart -p test    
+$ dart ./bin/generator.dart -p samples    
 ```
 
 Or you can call the method directly:
@@ -17,14 +17,14 @@ print(result.toJson());
 
 ## Features
 
-- ✅Classes
-- ✅Enums
-- ✅Logic Tree
-- ✅Flutter Support
-- ✅Top Level Methods and Variables
-- ✅Methods
-- ✅Fields
-- ✅Constructors
+- ✅  Classes
+- ✅  Enums
+- ✅  Logic Tree
+- ✅  Flutter Support
+- ✅  Top Level Methods and Variables
+- ✅  Methods
+- ✅  Fields
+- ✅  Constructors
 
 ## Example
 
