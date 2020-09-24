@@ -39,15 +39,18 @@ void main(List<String> args) {
   final output = Directory(options.output);
   final inputDir = Directory(options.path);
   final inputFile = File(options.path);
+  final _paths = <String>[];
   if (inputDir.existsSync()) {
-    final _paths = <String>[];
     _processDirectory(inputDir, inputDir, output, _paths);
-    writeIndex(_paths, output);
   } else if (inputFile.existsSync()) {
-    _processFile(output, inputFile);
+    _paths.add(inputFile.path);
   } else {
     throw Exception('Not a valid path!');
   }
+  for (final path in _paths) {
+    _processFile(output, File(path));
+  }
+  writeIndex(_paths, output);
 }
 
 void writeIndex(List<String> _paths, Directory output) {
@@ -67,14 +70,13 @@ void _processDirectory(
       _processDirectory(file, input, output, paths);
     } else {
       paths.add(p.relative(file.path));
-      _processFile(output, file);
     }
   }
 }
 
 void _processFile(Directory output, File input) {
   final source = input.readAsStringSync();
-  final result = parseSource(source, _path);
+  final result = parseSource(source, input.path);
   final _file = _getFile(
     output.path,
     p.basenameWithoutExtension(input.path) + '.json',
