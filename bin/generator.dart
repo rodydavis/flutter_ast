@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
+import 'dart:convert';
 
 import 'package:build_cli_annotations/build_cli_annotations.dart';
 import "package:console/console.dart";
@@ -35,26 +36,48 @@ class Options {
 void main(List<String> args) {
   Console.init();
   final options = parseOptions(args);
-  final _path = options.path;
   final output = Directory(options.output);
-  final inputDir = Directory(_path);
-  final inputFile = File(_path);
-  if (inputFile.existsSync()) {
-    _processFile(output, inputFile, _path);
-  }
+  final inputDir = Directory(options.path);
+  final inputFile = File(options.path);
   if (inputDir.existsSync()) {
-    for (final file in inputDir.listSync(recursive: true)) {
-      _processFile(output, file, _path);
+    final _paths = <String>[];
+    _processDirectory(inputDir, inputDir, output, _paths);
+    writeIndex(_paths, output);
+  } else if (inputFile.existsSync()) {
+    _processFile(output, inputFile);
+  } else {
+    throw Exception('Not a valid path!');
+  }
+}
+
+void writeIndex(List<String> _paths, Directory output) {
+  final _result = <String, dynamic>{};
+  _result['files'] = [];
+  for (final pth in _paths) {
+    _result['files'].add("$pth");
+  }
+  final _file = _getFile(output.path, 'meta.json');
+  _file.writeAsStringSync(json.encode(_result));
+}
+
+void _processDirectory(
+    Directory dir, Directory input, Directory output, List<String> paths) {
+  for (final file in dir.listSync()) {
+    if (file is Directory) {
+      _processDirectory(file, input, output, paths);
+    } else {
+      paths.add(p.relative(file.path));
+      _processFile(output, file);
     }
   }
 }
 
-void _processFile(Directory output, File input, String _path) {
+void _processFile(Directory output, File input) {
   final source = input.readAsStringSync();
   final result = parseSource(source, _path);
   final _file = _getFile(
     output.path,
-    p.basenameWithoutExtension(_path) + '.json',
+    p.basenameWithoutExtension(input.path) + '.json',
   );
   _file.writeAsStringSync(result.toString());
 }
