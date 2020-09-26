@@ -26,6 +26,7 @@ class DartField {
 
   String name;
   String type;
+  bool isFinal = false;
 
   static void _process(VariableDeclarationListImpl node, DartField base) {
     for (final child in node.childEntities) {
@@ -35,6 +36,7 @@ class DartField {
       }
       if (child is VariableDeclarationImpl) {
         base.name = child.name.toString();
+        base.isFinal = child?.isFinal ??  false;
       }
     }
   }

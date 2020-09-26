@@ -8,6 +8,7 @@ class DartClass {
   factory DartClass.fromNode(ClassDeclarationImpl root, DartFile parent) {
     final base = DartClass();
     base.name = root.name.toString();
+    base.isAbstract = root?.isAbstract ?? false;
     for (final item in root.childEntities.whereType<FieldDeclarationImpl>()) {
       base.fields.add(DartField.fromNode(item, base));
     }
@@ -28,12 +29,14 @@ class DartClass {
   final List<DartField> fields = [];
   final List<DartMethod> methods = [];
   String name;
+  bool isAbstract = false;
   final List<DartComment> comments = [];
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'comments': comments,
+      'isAbstract': isAbstract,
       'fields': fields,
       'constructors': constructors,
       'methods': methods,

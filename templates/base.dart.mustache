@@ -1,16 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
+{{#imports}}
+{{path}}
+{{/imports}}
+{{#classes}}
 
-class {{class}}Render extends StatelessWidget {
+class {{class}}Render<T> extends StatelessWidget {
 
   const {{class}}Render({
-  {{#props}}
-    this.{{name}},
-  {{/props}}
+    @required this.wData,
+    @required this.wUpdate,
   });
 
-  {{#props}}
-  final {{type}} {{name}};
-  {{/props}}
+  @override
+  final Map<String, dynamic> wData;
+
+  @override
+  final VoidCallback wUpdate;
+
+  {{#fields}}
+  {{type}} get {{name}} {
+    return null;
+  }
+
+  set {{name}}({{type}} val) {
+    if (val == this.{{name}}) {
+      return;
+    }
+  }
+
+  {{/fields}}
+
+  @override
+  Map<String, dynamic> get staticFields => {
+  {{#static}}
+  '{{name}}': {{value}},
+  {{/static}}
+  };
 
   @override
   String get description {
@@ -22,27 +50,37 @@ class {{class}}Render extends StatelessWidget {
   }
 
   @override
-  Widget get base {
-    return {{class}}(
+  Map<String, Object> get constructors {
+     return <String, Object>{
+    {{#constructors}}
+    '{{name}}': {{className}}(
       {{#props}}
-        {{name}}: this.{{name}},
+       {{key}} {{separator}} this.{{name}},
       {{/props}}
-    );
+    ),
+    {{/constructors}}
+    };
   }
 
   @override
-  Widget build(BuildContext context) => base;
+  Widget build(BuildContext context) {
+    if (isWidget) return defaultBase;
+    return Container();
+  }
+
+  @override
+  bool get isWidget => defaultBase is Widget;
+  
+  @override
+  Object get defaultBase => constructors['default'];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    {{#props}}
-      {{#position}}
-         properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
-      {{/position}}
-      {{^position}}
-        properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
-      {{/position}}
-    {{/props}}
+    {{#fields}}
+      properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
+    {{/fields}}
   }
 }
+
+{{/classes}}
