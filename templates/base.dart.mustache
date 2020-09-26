@@ -23,7 +23,11 @@ class {{class}}Render extends StatelessWidget {
 
   @override
   Widget get base {
-    return Container();
+    return {{class}}(
+      {{#props}}
+        {{name}}: this.{{name}},
+      {{/props}}
+    );
   }
 
   @override
