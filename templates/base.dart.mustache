@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+
+class {{class}}Render extends StatelessWidget {
+
+  const {{class}}Render({
+  {{#props}}
+    this.{{name}},
+  {{/props}}
+  });
+
+  {{#props}}
+  final {{type}} {{name}};
+  {{/props}}
+
+  @override
+  String get description {
+    final sb = StringBuffer();
+    {{#comments}}
+    sb.writeln("{{line}}");
+    {{/comments}}
+    return sb.toString();
+  }
+
+  @override
+  Widget get base {
+    return Container();
+  }
+
+  @override
+  Widget build(BuildContext context) => base;
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    {{#props}}
+      {{#position}}
+         properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
+      {{/position}}
+      {{^position}}
+        properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
+      {{/position}}
+    {{/props}}
+  }
+}

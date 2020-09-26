@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:build_cli_annotations/build_cli_annotations.dart';
 import "package:console/console.dart";
 import 'package:flutter_ast/flutter_ast.dart';
+import 'package:mustache_template/mustache_template.dart';
 
 part 'generator.g.dart';
 
@@ -47,8 +48,16 @@ void main(List<String> args) {
   } else {
     throw Exception('Not a valid path!');
   }
+  final _templateFile = File(
+      '/Users/rodydavis/Developer/GitHub/protoypes/widget_studio/third_party/flutter_dynamic_widget/third_party/flutter_ast/templates/base.dart.mustache');
+  final template = Template(
+    _templateFile.readAsStringSync(),
+    name: _templateFile.path,
+    lenient: true,
+    htmlEscapeValues: false,
+  );
   for (final path in _paths) {
-    _processFile(output, File(path));
+    _processFile(output, File(path), template);
   }
   writeIndex(_paths, output);
 }
@@ -74,14 +83,32 @@ void _processDirectory(
   }
 }
 
-void _processFile(Directory output, File input) {
+void _processFile(Directory output, File input, Template template) {
   final source = input.readAsStringSync();
   final result = parseSource(source, input.path);
-  final _file = _getFile(
-    output.path,
-    p.basenameWithoutExtension(input.path) + '.json',
-  );
-  _file.writeAsStringSync(result.toString());
+  final _base = result.file;
+  if (_base != null && _base.classes.isNotEmpty) {
+    final _class = _base.classes.first;
+    if (!_class.name.startsWith('_')) {
+      final _basePath =
+          p.basenameWithoutExtension(input.path).replaceAll('.g', '');
+      final _path = _basePath + '.g.dart';
+      final _file = _getFile(output.path, _path);
+      final _output = template.renderString({
+        'class': _class.name,
+        'props': _class?.constructors == null || _class.constructors.isEmpty
+            ? null
+            : _class.constructors.first?.properties
+                ?.map((e) => {
+                      'name': e.name,
+                      'type': e.type,
+                      'value': e.value,
+                    })
+                ?.toList(),
+      });
+      _file.writeAsStringSync(_output);
+    }
+  }
 }
 
 File _getFile(String output, String filename) {
