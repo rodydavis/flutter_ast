@@ -76,8 +76,8 @@ abstract class Core<T> {
 
   String get name => data == null ? null : data['name'];
   String get type => data == null ? null : data['type'];
+
+  dynamic toCode();
+  dynamic toJson();
 }
 
-extension Utils on Object {
-  dynamic toCode() => this;
-}

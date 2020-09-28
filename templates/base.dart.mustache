@@ -97,7 +97,7 @@ class {{class}}Render<T> extends StatelessWidget {
       'name': '{{class}}',
       'props': {
         {{#fields}}
-        '{{name}}': this.{{name}},
+        '{{name}}': this.{{name}}Val.toJson(),
         {{/fields}}
       }
     };
@@ -109,7 +109,7 @@ class {{class}}Render<T> extends StatelessWidget {
     {{#constructors}}
     '{{name}}': """{{className}}(
       {{#props}}
-       {{key}}{{separator}} ${this.{{name}}?.toCode()},
+       {{key}}{{separator}} ${this.{{name}}Val.toCode()},
       {{/props}}
     )""",
     {{/constructors}}

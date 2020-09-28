@@ -169,7 +169,7 @@ void _processClass(
     final _fields = <String, String>{};
     final _static = <String, String>{};
     for (final field in item.fields) {
-      if (field.name == 'key') field.name = 'widgetKey';
+      if (field.type == 'Key') continue;
       if (field.name.startsWith('_')) continue;
       if (!field.isFinal) continue;
       _fields[field.name] = field.type;
@@ -182,7 +182,7 @@ void _processClass(
       if (_template['classes']['fields'].isEmpty) {
         for (final sub in item.constructors) {
           for (final field in sub.properties) {
-            if (field.name == 'key') continue;
+            if (field.type == 'Key') continue;
             if (field.name.startsWith('_')) continue;
             _fields[field.name] = field.type;
           }
@@ -199,6 +199,7 @@ void _processClass(
         };
         for (final field in sub.properties) {
           if (field.name.startsWith('_')) continue;
+          if (field.type == 'Key') continue;
           _baseConst['props'].add({
             'name': field.name,
             'type': field.type,
