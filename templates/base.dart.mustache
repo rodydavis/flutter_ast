@@ -9,26 +9,35 @@ import 'package:flutter/gestures.dart';
 
 class {{class}}Render<T> extends StatelessWidget {
 
-  const {{class}}Render({
-    @required this.wData,
-    @required this.wUpdate,
+  factory {{class}}Render.fromJson(Map<String, dynamic> data, VoidCallback update) {
+    return {{class}}Render(update,
+      {{#fields}}
+      {{name}}Val: null,
+      {{/fields}} 
+    );
+  }
+
+  {{class}}Render(this._update, {
+    {{#fields}}
+    @required this.{{name}}Val,
+    {{/fields}}
   });
 
   @override
-  final Map<String, dynamic> wData;
-
-  @override
-  final VoidCallback wUpdate;
+  final VoidCallback _update;
 
   {{#fields}}
+  {{core}} {{name}}Val;
+
   {{type}} get {{name}} {
-    return null;
+    return {{name}}Val.value;
   }
 
   set {{name}}({{type}} val) {
     if (val == this.{{name}}) {
       return;
     }
+    {{name}}Val.value = val;
   }
 
   {{/fields}}
@@ -41,30 +50,81 @@ class {{class}}Render<T> extends StatelessWidget {
   };
 
   @override
+  List<Core> get props => [
+    {{#fields}}
+    this.{{name}}Val,
+    {{/fields}}
+  ];
+
+  @override
   String get description {
     final sb = StringBuffer();
     {{#comments}}
-    sb.writeln("{{line}}");
+    sb.writeln("{{comments}}");
     {{/comments}}
     return sb.toString();
   }
 
   @override
   Map<String, Object> get constructors {
-     return <String, Object>{
-    {{#constructors}}
-    '{{name}}': {{className}}(
-      {{#props}}
-       {{key}} {{separator}} this.{{name}},
-      {{/props}}
-    ),
-    {{/constructors}}
+     return {
+      {{#constructors}}
+      '{{name}}': {{className}}(
+        {{#props}}
+        {{key}}{{separator}} this.{{name}},
+        {{/props}}
+      ),
+      {{/constructors}}
     };
   }
 
   @override
+  Map<String, Map<String, dynamic>> get properties {
+     return {
+      {{#constructors}}
+      '{{name}}': {
+        {{#props}}
+        '{{key}}': this.{{name}},
+        {{/props}}
+      },
+      {{/constructors}}
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': '{{class}}',
+      'props': {
+        {{#fields}}
+        '{{name}}': this.{{name}},
+        {{/fields}}
+      }
+    };
+  }
+
+  @override
+  Map<String, String> toCode() {
+    return {
+    {{#constructors}}
+    '{{name}}': """{{className}}(
+      {{#props}}
+       {{key}}{{separator}} ${this.{{name}}?.toCode()},
+      {{/props}}
+    )""",
+    {{/constructors}}
+    };
+  }
+
+  final _controller = ValueNotifier<WidgetRect>(null);
+  ValueListenable<WidgetRect> get stats => _controller;
+
+  @override
   Widget build(BuildContext context) {
-    if (isWidget) return defaultBase;
+    if (isWidget) return TrackedWidget(
+      controller: _controller,
+      child: defaultBase,
+    );
     return Container();
   }
 

@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
+
+import 'core.dart';
+
+class {{name}}Object extends Core<{{type}}> {
+  {{name}}Object(this.data, this.changed);
+
+  @override
+  final Map<String, dynamic> data;
+
+  @override
+  final ValueChanged<Map<String, dynamic>> changed;
+
+  T get fallback = {{fallback}};
+
+  @override
+  {{type}} get value {
+    if (data == null || data['value'] == null) {
+      return fallback;
+    }
+    final _value = parseValue<{{type}}>(data['value']);
+    return _value;
+  }
+
+  @override
+  set value({{type}} val) {
+    if (val == value) {
+      return;
+    }
+    final _value = serializeValue<{{type}}>(val);
+    changed({'type': type, 'value': _value});
+  }
+}
