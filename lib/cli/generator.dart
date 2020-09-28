@@ -188,7 +188,6 @@ void _processClass(
           }
         }
       }
-      _fields['widgetKey'] = 'Key';
       for (final sub in item.constructors) {
         if (sub.name.startsWith('_')) continue;
         final _baseConst = <String, dynamic>{

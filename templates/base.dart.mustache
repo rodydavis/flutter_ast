@@ -12,7 +12,7 @@ class {{class}}Render<T> extends StatelessWidget {
   factory {{class}}Render.fromJson(Map<String, dynamic> data, VoidCallback update) {
     return {{class}}Render(update,
       {{#fields}}
-      {{name}}Val: null,
+      {{name}}Val: BaseCore<{{type}}>(null, update),
       {{/fields}} 
     );
   }

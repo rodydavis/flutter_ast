@@ -81,3 +81,29 @@ abstract class Core<T> {
   dynamic toJson();
 }
 
+class BaseCore<T> extends Core<T> {
+  BaseCore(this.data, this.changed);
+
+  @override
+  Map<String, dynamic> data;
+
+  @override
+  final VoidCallback changed;
+
+   @override
+  T get value {
+    if (data == null || data['value'] == null) {
+      return fallback;
+    }
+    return data['value'];
+  }
+
+  @override
+  set value(T val) {
+    if (val == value) {
+      return;
+    }
+    data = {'type': type, 'value': val};
+    changed();
+  }
+}
