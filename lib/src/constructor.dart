@@ -1,41 +1,30 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'index.dart';
 
-class DartConstructor {
-  DartConstructor();
-
-  factory DartConstructor.fromNode(
-    ConstructorDeclarationImpl root,
-    DartClass parent,
-  ) {
-    final base = DartConstructor();
-    base.name = root.toString();
-
-    for (final node in root.childEntities) {
+extension ConstructorDeclarationImplUtils on ConstructorDeclarationImpl {
+  DartConstructor toDartConstructor(DartClass parent) {
+    DartConstructor base;
+    String _name = this.root.toString();
+    for (final node in this.root.childEntities) {
       if (node is SimpleIdentifierImpl) {
-        base.name = node.name;
+        _name = node.name;
       }
       if (node is DeclaredSimpleIdentifier) {
-        base.name = node.name;
+        _name = node.name;
       }
+      base = DartConstructor(name: _name);
       if (node is FormalParameterListImpl) {
         for (final child in node.childEntities) {
           if (child is DefaultFormalParameterImpl) {
-            base.properties.add(DartProperty.fromNode(child, parent));
+            final _props = base.properties;
+            _props.add(child.toDartProperty(parent.fields));
+            base = base.copyWith(properties: _props);
           }
         }
       }
     }
     return base;
-  }
-
-  String name;
-  List<DartProperty> properties = [];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'properties': properties,
-    };
   }
 }

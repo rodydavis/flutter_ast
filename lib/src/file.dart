@@ -1,3 +1,5 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'index.dart';
 
@@ -13,7 +15,7 @@ class DartFile {
     }
     for (final node
         in root.childEntities.whereType<TopLevelVariableDeclarationImpl>()) {
-      base.fields.add(DartField.fromTopLevelNode(node));
+      base.fields.add(node.toDartField());
     }
     for (final node
         in root.childEntities.whereType<FunctionDeclarationImpl>()) {
@@ -35,7 +37,7 @@ class DartFile {
     }
     for (final node in root.childEntities.whereType<EnumDeclarationImpl>()) {
       final EnumDeclarationImpl _node = node;
-      base.enums.add(DartEnum.fromNode(_node));
+      base.enums.add(_node.toDartEnum());
     }
     return base;
   }

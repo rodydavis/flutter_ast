@@ -1,23 +1,15 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'index.dart';
 
-class DartEnum {
-  DartEnum();
-
-  factory DartEnum.fromNode(EnumDeclarationImpl root) {
-    final base = DartEnum();
-    base.name = root.name.toString();
-    base.values = root.constants.map((e) => e.name.toString()).toList();
-    return base;
-  }
-
-  String name;
-  List<String> values;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'values': values,
-    };
+extension EnumDeclarationImplUtils on EnumDeclarationImpl {
+  DartEnum toDartEnum() {
+    final _name = this.name.toString();
+    final _values = this.constants.map((e) => e.name.toString()).toList();
+    return DartEnum(
+      name: _name,
+      values: _values,
+    );
   }
 }

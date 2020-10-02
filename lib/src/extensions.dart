@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 extension Utils on Object {
-  void debug() => print('${this.runtimeType} -> $this');
+  String get description => '${this.runtimeType} -> $this';
+  void debug() => print(description);
 }
 
 extension MapUtils on Map {

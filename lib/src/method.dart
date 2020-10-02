@@ -1,3 +1,5 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'index.dart';
 
@@ -67,7 +69,7 @@ class DartMethod {
       return Simple.value('name', node.name);
     }
     if (node is LiteralImpl) {
-      return Simple.value('value', DartProperty.processLiteralValue(node));
+      return Simple.value('value', processLiteralValue(node));
     }
     if (node is TypeNameImpl) {
       return Simple.value('type', node.toString());
@@ -131,7 +133,7 @@ class DartMethod {
       if (arg is LiteralImpl) {
         parent.arguments['$i'] = Simple.value(
           'value',
-          DartProperty.processLiteralValue(arg),
+          processLiteralValue(arg),
         );
       }
       if (arg is NamedExpressionImpl) {
@@ -265,4 +267,3 @@ class Simple extends TreeValue {
     };
   }
 }
-

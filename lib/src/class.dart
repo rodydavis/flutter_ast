@@ -1,3 +1,5 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'comment.dart';
 import 'index.dart';
@@ -9,17 +11,17 @@ class DartClass {
     final base = DartClass();
     base.name = root.name.toString();
     for (final item in root.childEntities.whereType<FieldDeclarationImpl>()) {
-      base.fields.add(DartField.fromNode(item, base));
+      base.fields.add(item.toDartField());
     }
     for (final item
         in root.childEntities.whereType<ConstructorDeclarationImpl>()) {
-      base.constructors.add(DartConstructor.fromNode(item, base));
+      base.constructors.add(item.toDartConstructor(base));
     }
     for (final item in root.childEntities.whereType<MethodDeclarationImpl>()) {
       base.methods.add(DartMethod.fromNode(item, base));
     }
     for (final item in root.childEntities.whereType<CommentImpl>()) {
-      base.comments.add(DartComment.fromNode(item));
+      base.comments.add(item.toDartComment());
     }
     return base;
   }
