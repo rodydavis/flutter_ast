@@ -74,7 +74,7 @@ MethodNode _check(SyntacticEntity node) {
   if (node is LiteralImpl) {
     return MethodNode.simple(
       name: 'value',
-      value: processLiteralValue(node),
+      value: node.toDartCore(),
     );
   }
   if (node is TypeNameImpl) {
@@ -150,7 +150,7 @@ MethodNode _processMethod(MethodInvocationImpl node) {
     if (arg is LiteralImpl) {
       arguments['$i'] = MethodNode.simple(
         name: 'value',
-        value: processLiteralValue(arg),
+        value: arg.toDartCore(),
       );
     }
     if (arg is NamedExpressionImpl) {

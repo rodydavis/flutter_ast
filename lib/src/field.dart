@@ -64,7 +64,7 @@ extension DefaultFormalParameterImplUtils on DefaultFormalParameterImpl {
         continue;
       }
       if (_hasValue && node is LiteralImpl) {
-        base = base.copyWith(value: processLiteralValue(node));
+        base = base.copyWith(value: node.toDartCore());
       }
     }
     return base;
