@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:flutter_ast_core/flutter_ast_core.dart';
 
 import 'src/index.dart';
 export 'src/index.dart';
@@ -12,7 +13,7 @@ DartResult parseSource(String source, [String path]) {
     throwIfDiagnostics: false,
   );
   final root = result.unit.root;
-  final file = DartFile.fromNode(root);
+  final file = root.toDartFile();
   final output = DartResult(file);
   if (result.errors.isNotEmpty) {
     output.errors.addAll(result.errors);

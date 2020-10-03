@@ -4,7 +4,7 @@ import 'analyzer.dart';
 import 'comment.dart';
 import 'index.dart';
 
-extension ClassDeclarationImplUtils on ClassDeclarationImpl {
+extension ClauseDeclarationImplUtils on ClassDeclarationImpl {
   DartClass toDartClass(DartFile parent) {
     DartClass base = DartClass(name: this.name.toString());
     final List<DartField> fields = [];
@@ -25,6 +25,10 @@ extension ClassDeclarationImplUtils on ClassDeclarationImpl {
       comments.add(item.toDartComment());
     }
     return base.copyWith(
+      isAbstract: this?.abstractKeyword != null,
+      extendsClause: this?.extendsClause?.toString(),
+      implementsClause: this?.implementsClause?.toString(),
+      withClause: this?.withClause?.toString(),
       fields: fields,
       constructors: constructors,
       methods: methods,

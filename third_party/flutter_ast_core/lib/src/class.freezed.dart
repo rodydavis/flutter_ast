@@ -22,13 +22,21 @@ class _$DartClassTearOff {
       List<DartComment> comments = const [],
       List<DartField> fields = const [],
       List<DartMethod> methods = const [],
-      @required String name}) {
+      @required String name,
+      bool isAbstract,
+      String extendsClause,
+      String implementsClause,
+      String withClause}) {
     return _DartClass(
       constructors: constructors,
       comments: comments,
       fields: fields,
       methods: methods,
       name: name,
+      isAbstract: isAbstract,
+      extendsClause: extendsClause,
+      implementsClause: implementsClause,
+      withClause: withClause,
     );
   }
 
@@ -49,6 +57,10 @@ mixin _$DartClass {
   List<DartField> get fields;
   List<DartMethod> get methods;
   String get name;
+  bool get isAbstract;
+  String get extendsClause;
+  String get implementsClause;
+  String get withClause;
 
   Map<String, dynamic> toJson();
   $DartClassCopyWith<DartClass> get copyWith;
@@ -63,7 +75,11 @@ abstract class $DartClassCopyWith<$Res> {
       List<DartComment> comments,
       List<DartField> fields,
       List<DartMethod> methods,
-      String name});
+      String name,
+      bool isAbstract,
+      String extendsClause,
+      String implementsClause,
+      String withClause});
 }
 
 /// @nodoc
@@ -81,6 +97,10 @@ class _$DartClassCopyWithImpl<$Res> implements $DartClassCopyWith<$Res> {
     Object fields = freezed,
     Object methods = freezed,
     Object name = freezed,
+    Object isAbstract = freezed,
+    Object extendsClause = freezed,
+    Object implementsClause = freezed,
+    Object withClause = freezed,
   }) {
     return _then(_value.copyWith(
       constructors: constructors == freezed
@@ -92,6 +112,16 @@ class _$DartClassCopyWithImpl<$Res> implements $DartClassCopyWith<$Res> {
       methods:
           methods == freezed ? _value.methods : methods as List<DartMethod>,
       name: name == freezed ? _value.name : name as String,
+      isAbstract:
+          isAbstract == freezed ? _value.isAbstract : isAbstract as bool,
+      extendsClause: extendsClause == freezed
+          ? _value.extendsClause
+          : extendsClause as String,
+      implementsClause: implementsClause == freezed
+          ? _value.implementsClause
+          : implementsClause as String,
+      withClause:
+          withClause == freezed ? _value.withClause : withClause as String,
     ));
   }
 }
@@ -107,7 +137,11 @@ abstract class _$DartClassCopyWith<$Res> implements $DartClassCopyWith<$Res> {
       List<DartComment> comments,
       List<DartField> fields,
       List<DartMethod> methods,
-      String name});
+      String name,
+      bool isAbstract,
+      String extendsClause,
+      String implementsClause,
+      String withClause});
 }
 
 /// @nodoc
@@ -126,6 +160,10 @@ class __$DartClassCopyWithImpl<$Res> extends _$DartClassCopyWithImpl<$Res>
     Object fields = freezed,
     Object methods = freezed,
     Object name = freezed,
+    Object isAbstract = freezed,
+    Object extendsClause = freezed,
+    Object implementsClause = freezed,
+    Object withClause = freezed,
   }) {
     return _then(_DartClass(
       constructors: constructors == freezed
@@ -137,6 +175,16 @@ class __$DartClassCopyWithImpl<$Res> extends _$DartClassCopyWithImpl<$Res>
       methods:
           methods == freezed ? _value.methods : methods as List<DartMethod>,
       name: name == freezed ? _value.name : name as String,
+      isAbstract:
+          isAbstract == freezed ? _value.isAbstract : isAbstract as bool,
+      extendsClause: extendsClause == freezed
+          ? _value.extendsClause
+          : extendsClause as String,
+      implementsClause: implementsClause == freezed
+          ? _value.implementsClause
+          : implementsClause as String,
+      withClause:
+          withClause == freezed ? _value.withClause : withClause as String,
     ));
   }
 }
@@ -150,7 +198,11 @@ class _$_DartClass implements _DartClass {
       this.comments = const [],
       this.fields = const [],
       this.methods = const [],
-      @required this.name})
+      @required this.name,
+      this.isAbstract,
+      this.extendsClause,
+      this.implementsClause,
+      this.withClause})
       : assert(constructors != null),
         assert(comments != null),
         assert(fields != null),
@@ -174,10 +226,18 @@ class _$_DartClass implements _DartClass {
   final List<DartMethod> methods;
   @override
   final String name;
+  @override
+  final bool isAbstract;
+  @override
+  final String extendsClause;
+  @override
+  final String implementsClause;
+  @override
+  final String withClause;
 
   @override
   String toString() {
-    return 'DartClass(constructors: $constructors, comments: $comments, fields: $fields, methods: $methods, name: $name)';
+    return 'DartClass(constructors: $constructors, comments: $comments, fields: $fields, methods: $methods, name: $name, isAbstract: $isAbstract, extendsClause: $extendsClause, implementsClause: $implementsClause, withClause: $withClause)';
   }
 
   @override
@@ -196,7 +256,19 @@ class _$_DartClass implements _DartClass {
                 const DeepCollectionEquality()
                     .equals(other.methods, methods)) &&
             (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)));
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.isAbstract, isAbstract) ||
+                const DeepCollectionEquality()
+                    .equals(other.isAbstract, isAbstract)) &&
+            (identical(other.extendsClause, extendsClause) ||
+                const DeepCollectionEquality()
+                    .equals(other.extendsClause, extendsClause)) &&
+            (identical(other.implementsClause, implementsClause) ||
+                const DeepCollectionEquality()
+                    .equals(other.implementsClause, implementsClause)) &&
+            (identical(other.withClause, withClause) ||
+                const DeepCollectionEquality()
+                    .equals(other.withClause, withClause)));
   }
 
   @override
@@ -206,7 +278,11 @@ class _$_DartClass implements _DartClass {
       const DeepCollectionEquality().hash(comments) ^
       const DeepCollectionEquality().hash(fields) ^
       const DeepCollectionEquality().hash(methods) ^
-      const DeepCollectionEquality().hash(name);
+      const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(isAbstract) ^
+      const DeepCollectionEquality().hash(extendsClause) ^
+      const DeepCollectionEquality().hash(implementsClause) ^
+      const DeepCollectionEquality().hash(withClause);
 
   @override
   _$DartClassCopyWith<_DartClass> get copyWith =>
@@ -224,7 +300,11 @@ abstract class _DartClass implements DartClass {
       List<DartComment> comments,
       List<DartField> fields,
       List<DartMethod> methods,
-      @required String name}) = _$_DartClass;
+      @required String name,
+      bool isAbstract,
+      String extendsClause,
+      String implementsClause,
+      String withClause}) = _$_DartClass;
 
   factory _DartClass.fromJson(Map<String, dynamic> json) =
       _$_DartClass.fromJson;
@@ -239,6 +319,14 @@ abstract class _DartClass implements DartClass {
   List<DartMethod> get methods;
   @override
   String get name;
+  @override
+  bool get isAbstract;
+  @override
+  String get extendsClause;
+  @override
+  String get implementsClause;
+  @override
+  String get withClause;
   @override
   _$DartClassCopyWith<_DartClass> get copyWith;
 }

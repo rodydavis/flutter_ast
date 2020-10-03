@@ -33,6 +33,10 @@ _$_DartClass _$_$_DartClassFromJson(Map<String, dynamic> json) {
             ?.toList() ??
         [],
     name: json['name'] as String,
+    isAbstract: json['isAbstract'] as bool,
+    extendsClause: json['extendsClause'] as String,
+    implementsClause: json['implementsClause'] as String,
+    withClause: json['withClause'] as String,
   );
 }
 
@@ -43,4 +47,8 @@ Map<String, dynamic> _$_$_DartClassToJson(_$_DartClass instance) =>
       'fields': instance.fields,
       'methods': instance.methods,
       'name': instance.name,
+      'isAbstract': instance.isAbstract,
+      'extendsClause': instance.extendsClause,
+      'implementsClause': instance.implementsClause,
+      'withClause': instance.withClause,
     };

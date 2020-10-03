@@ -16,6 +16,10 @@ abstract class DartClass with _$DartClass {
     @Default([]) List<DartField> fields,
     @Default([]) List<DartMethod> methods,
     @required String name,
+    bool isAbstract,
+    String extendsClause,
+    String implementsClause,
+    String withClause,
   }) = _DartClass;
 
   factory DartClass.fromJson(Map<String, dynamic> json) =>
