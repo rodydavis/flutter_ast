@@ -8,5 +8,4 @@ export 'extensions.dart';
 export 'field.dart';
 export 'file.dart';
 export 'flutter.dart';
-export 'generator.dart';
 export 'method.dart';
