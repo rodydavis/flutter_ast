@@ -23,17 +23,7 @@ class DartFile {
     }
     for (final node in root.childEntities.whereType<ClassDeclarationImpl>()) {
       final ClassDeclarationImpl _node = node;
-      bool isWidget = false;
-      final _extends = _node.extendsClause.toString();
-      if (_extends.contains('StatelessWidget') ||
-          _extends.contains('StatefulWidget')) {
-        isWidget = true;
-      }
-      if (isWidget) {
-        base.classes.add(FlutterClass.fromNode(_node, base));
-      } else {
-        base.classes.add(DartClass.fromNode(_node, base));
-      }
+      base.classes.add(DartClass.fromNode(_node, base));
     }
     for (final node in root.childEntities.whereType<EnumDeclarationImpl>()) {
       final EnumDeclarationImpl _node = node;
