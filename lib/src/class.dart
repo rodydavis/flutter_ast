@@ -4,41 +4,31 @@ import 'analyzer.dart';
 import 'comment.dart';
 import 'index.dart';
 
-class DartClass {
-  DartClass();
-
-  factory DartClass.fromNode(ClassDeclarationImpl root, DartFile parent) {
-    final base = DartClass();
-    base.name = root.name.toString();
-    for (final item in root.childEntities.whereType<FieldDeclarationImpl>()) {
-      base.fields.add(item.toDartField());
+extension ClassDeclarationImplUtils on ClassDeclarationImpl {
+  DartClass toDartClass(DartFile parent) {
+    DartClass base = DartClass(name: this.name.toString());
+    final List<DartField> fields = [];
+    for (final item in this.childEntities.whereType<FieldDeclarationImpl>()) {
+      fields.add(item.toDartField());
     }
+    final List<DartConstructor> constructors = [];
     for (final item
-        in root.childEntities.whereType<ConstructorDeclarationImpl>()) {
-      base.constructors.add(item.toDartConstructor(base));
+        in this.childEntities.whereType<ConstructorDeclarationImpl>()) {
+      constructors.add(item.toDartConstructor(base));
     }
-    for (final item in root.childEntities.whereType<MethodDeclarationImpl>()) {
-      base.methods.add(item.toDartMethod(base));
+    final List<DartMethod> methods = [];
+    for (final item in this.childEntities.whereType<MethodDeclarationImpl>()) {
+      methods.add(item.toDartMethod(base));
     }
-    for (final item in root.childEntities.whereType<CommentImpl>()) {
-      base.comments.add(item.toDartComment());
+    final List<DartComment> comments = [];
+    for (final item in this.childEntities.whereType<CommentImpl>()) {
+      comments.add(item.toDartComment());
     }
-    return base;
-  }
-
-  final List<DartConstructor> constructors = [];
-  final List<DartField> fields = [];
-  final List<DartMethod> methods = [];
-  String name;
-  final List<DartComment> comments = [];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'comments': comments,
-      'fields': fields,
-      'constructors': constructors,
-      'methods': methods,
-    };
+    return base.copyWith(
+      fields: fields,
+      constructors: constructors,
+      methods: methods,
+      comments: comments,
+    );
   }
 }

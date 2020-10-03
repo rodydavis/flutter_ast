@@ -6,3 +6,4 @@ export 'src/core.dart';
 export 'src/constructor.dart';
 export 'src/method.dart';
 export 'src/class.dart';
+export 'src/file.dart';

@@ -23,7 +23,7 @@ class DartFile {
     }
     for (final node in root.childEntities.whereType<ClassDeclarationImpl>()) {
       final ClassDeclarationImpl _node = node;
-      base.classes.add(DartClass.fromNode(_node, base));
+      base.classes.add(_node.toDartClass(base));
     }
     for (final node in root.childEntities.whereType<EnumDeclarationImpl>()) {
       final EnumDeclarationImpl _node = node;
