@@ -34,7 +34,7 @@ extension AstNodeUtils on AstNode {
       final ClassDeclarationImpl _node = node;
       classes.add(_node.toDartClass(base));
     }
-     base = base.copyWith(classes: classes);
+    base = base.copyWith(classes: classes);
 
     final List<DartEnum> enums = [];
     for (final node in root.childEntities.whereType<EnumDeclarationImpl>()) {
@@ -44,5 +44,13 @@ extension AstNodeUtils on AstNode {
     base = base.copyWith(enums: enums);
 
     return base;
+  }
+}
+
+extension DartFileUtils on DartFile {
+  String toDart() {
+    final sb = StringBuffer();
+    // TODO: Write back out to Dart
+    return sb.toString();
   }
 }
