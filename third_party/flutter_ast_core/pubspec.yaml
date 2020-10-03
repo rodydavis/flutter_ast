@@ -12,6 +12,6 @@ dependencies:
   json_annotation: any
 
 dev_dependencies:
-  build_runner: ^1.10.3
+  build_runner: any
   freezed: any
   json_serializable: any

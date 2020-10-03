@@ -12,3 +12,7 @@ abstract class DartComment with _$DartComment {
   factory DartComment.fromJson(Map<String, dynamic> json) =>
       _$DartCommentFromJson(json);
 }
+
+extension DartCommentUtils on DartComment {
+  String get comment => this?.lines == null ? '' : this.lines.join('\n');
+}
