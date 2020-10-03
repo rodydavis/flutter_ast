@@ -1,0 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
+
+class {{name}}Object<{{type}}> {
+    {{name}}Object(this._data, this._changed);
+
+    final Map<String, dynamic> _data;
+    final VoidCallback _changed;
+
+    {{type}} get value {
+      if (_data == null) {
+        return null;
+      }
+      return _data['value'];
+    }
+
+    set value({{type}} val) {
+      if (val == value) {
+        return;
+      }
+      _data['value'] = val;
+      _changed();
+    }
+}

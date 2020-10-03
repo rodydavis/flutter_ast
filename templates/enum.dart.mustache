@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
+
+import 'core.dart';
+
+class EnumObject<T> extends Core<String> {
+  EnumObject(this.data, this.values, this.changed);
+
+  @override
+  final Map<String, dynamic> data;
+
+  @override
+  final ValueChanged<Map<String, dynamic>> changed;
+
+  final List<T> values;
+
+  T get fallback = {{fallback}};
+
+  @override
+  {{type}} get value {
+    if (data == null || data['value'] == null) {
+      return fallback;
+    }
+    final _value = parseValue<{{type}}>(data['value']);
+    return _value;
+  }
+
+  @override
+  set value({{type}} val) {
+    if (val == value) {
+      return;
+    }
+    final _value = serializeValue<{{type}}>(val);
+    changed({'type': type, 'value': _value});
+  }
+}

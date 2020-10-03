@@ -1,0 +1,146 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
+{{#imports}}
+{{path}}
+{{/imports}}
+{{#classes}}
+
+class {{class}}Render<T> extends StatelessWidget {
+
+  factory {{class}}Render.fromJson(Map<String, dynamic> data, VoidCallback update) {
+    return {{class}}Render(update,
+      {{#fields}}
+      {{name}}Val: BaseCore<{{type}}>(null, update),
+      {{/fields}} 
+    );
+  }
+
+  {{class}}Render(this._update, {
+    {{#fields}}
+    @required this.{{name}}Val,
+    {{/fields}}
+  });
+
+  @override
+  final VoidCallback _update;
+
+  {{#fields}}
+  {{core}} {{name}}Val;
+
+  {{type}} get {{name}} {
+    return {{name}}Val.value;
+  }
+
+  set {{name}}({{type}} val) {
+    if (val == this.{{name}}) {
+      return;
+    }
+    {{name}}Val.value = val;
+  }
+
+  {{/fields}}
+
+  @override
+  Map<String, dynamic> get staticFields => {
+  {{#static}}
+  '{{name}}': {{value}},
+  {{/static}}
+  };
+
+  @override
+  List<Core> get props => [
+    {{#fields}}
+    this.{{name}}Val,
+    {{/fields}}
+  ];
+
+  @override
+  String get description {
+    final sb = StringBuffer();
+    {{#comments}}
+    sb.writeln("{{comments}}");
+    {{/comments}}
+    return sb.toString();
+  }
+
+  @override
+  Map<String, Object> get constructors {
+     return {
+      {{#constructors}}
+      '{{name}}': {{className}}(
+        {{#props}}
+        {{key}}{{separator}} this.{{name}},
+        {{/props}}
+      ),
+      {{/constructors}}
+    };
+  }
+
+  @override
+  Map<String, Map<String, dynamic>> get properties {
+     return {
+      {{#constructors}}
+      '{{name}}': {
+        {{#props}}
+        '{{key}}': this.{{name}},
+        {{/props}}
+      },
+      {{/constructors}}
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': '{{class}}',
+      'props': {
+        {{#fields}}
+        '{{name}}': this.{{name}}Val.toJson(),
+        {{/fields}}
+      }
+    };
+  }
+
+  @override
+  Map<String, String> toCode() {
+    return {
+    {{#constructors}}
+    '{{name}}': """{{className}}(
+      {{#props}}
+       {{key}}{{separator}} ${this.{{name}}Val.toCode()},
+      {{/props}}
+    )""",
+    {{/constructors}}
+    };
+  }
+
+  final _controller = ValueNotifier<WidgetRect>(null);
+  ValueListenable<WidgetRect> get stats => _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isWidget) return TrackedWidget(
+      controller: _controller,
+      child: defaultBase,
+    );
+    return Container();
+  }
+
+  @override
+  bool get isWidget => defaultBase is Widget;
+  
+  @override
+  Object get defaultBase => constructors['default'];
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    {{#fields}}
+      properties.add(DiagnosticsProperty('{{name}}', this.{{name}}));
+    {{/fields}}
+  }
+}
+
+{{/classes}}
