@@ -28,13 +28,13 @@ Map<String, dynamic> _$_$_DartMethodToJson(_$_DartMethod instance) =>
       'body': instance.body,
     };
 
-_$_MethodNode _$_$_MethodNodeFromJson(Map<String, dynamic> json) {
-  return _$_MethodNode(
+_$MethodBase _$_$MethodBaseFromJson(Map<String, dynamic> json) {
+  return _$MethodBase(
     name: json['name'] as String,
   );
 }
 
-Map<String, dynamic> _$_$_MethodNodeToJson(_$_MethodNode instance) =>
+Map<String, dynamic> _$_$MethodBaseToJson(_$MethodBase instance) =>
     <String, dynamic>{
       'name': instance.name,
     };

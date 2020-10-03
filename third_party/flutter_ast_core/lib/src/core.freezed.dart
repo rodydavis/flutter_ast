@@ -215,11 +215,10 @@ class __$DartCoreCopyWithImpl<$Res> extends _$DartCoreCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_DartCore extends _DartCore {
+class _$_DartCore implements _DartCore {
   const _$_DartCore({@required this.type, @required this.value})
       : assert(type != null),
-        assert(value != null),
-        super._();
+        assert(value != null);
 
   factory _$_DartCore.fromJson(Map<String, dynamic> json) =>
       _$_$_DartCoreFromJson(json);
@@ -346,8 +345,7 @@ class _$_DartCore extends _DartCore {
   }
 }
 
-abstract class _DartCore extends DartCore {
-  const _DartCore._() : super._();
+abstract class _DartCore implements DartCore {
   const factory _DartCore({@required String type, @required String value}) =
       _$_DartCore;
 
@@ -451,7 +449,7 @@ class _$DartPropertyCopyWithImpl<$Res> extends _$DartCoreCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$DartProperty extends DartProperty {
+class _$DartProperty implements DartProperty {
   const _$DartProperty(
       {@required this.name,
       this.key,
@@ -475,8 +473,7 @@ class _$DartProperty extends DartProperty {
         assert(isRequiredPositional != null),
         assert(isSynthetic != null),
         assert(isRequiredNamed != null),
-        assert(isOptionalNamed != null),
-        super._();
+        assert(isOptionalNamed != null);
 
   factory _$DartProperty.fromJson(Map<String, dynamic> json) =>
       _$_$DartPropertyFromJson(json);
@@ -701,8 +698,7 @@ class _$DartProperty extends DartProperty {
   }
 }
 
-abstract class DartProperty extends DartCore {
-  const DartProperty._() : super._();
+abstract class DartProperty implements DartCore {
   const factory DartProperty(
       {@required String name,
       String key,
@@ -797,7 +793,7 @@ class _$DartFieldCopyWithImpl<$Res> extends _$DartCoreCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$DartField extends DartField {
+class _$DartField implements DartField {
   const _$DartField(
       {@required this.name,
       @required this.type,
@@ -809,8 +805,7 @@ class _$DartField extends DartField {
         assert(type != null),
         assert(isFinal != null),
         assert(isConst != null),
-        assert(isStatic != null),
-        super._();
+        assert(isStatic != null);
 
   factory _$DartField.fromJson(Map<String, dynamic> json) =>
       _$_$DartFieldFromJson(json);
@@ -963,8 +958,7 @@ class _$DartField extends DartField {
   }
 }
 
-abstract class DartField extends DartCore {
-  const DartField._() : super._();
+abstract class DartField implements DartCore {
   const factory DartField(
       {@required String name,
       @required String type,

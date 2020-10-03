@@ -133,13 +133,12 @@ class __$DartMethodCopyWithImpl<$Res> extends _$DartMethodCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_DartMethod extends _DartMethod {
+class _$_DartMethod implements _DartMethod {
   const _$_DartMethod(
       {@required this.name, this.parameters = const [], @required this.body})
       : assert(name != null),
         assert(parameters != null),
-        assert(body != null),
-        super._();
+        assert(body != null);
 
   factory _$_DartMethod.fromJson(Map<String, dynamic> json) =>
       _$_$_DartMethodFromJson(json);
@@ -187,8 +186,7 @@ class _$_DartMethod extends _DartMethod {
   }
 }
 
-abstract class _DartMethod extends DartMethod {
-  const _DartMethod._() : super._();
+abstract class _DartMethod implements DartMethod {
   const factory _DartMethod(
       {@required String name,
       List<DartProperty> parameters,
@@ -210,7 +208,7 @@ abstract class _DartMethod extends DartMethod {
 MethodNode _$MethodNodeFromJson(Map<String, dynamic> json) {
   switch (json['runtimeType'] as String) {
     case 'default':
-      return _MethodNode.fromJson(json);
+      return MethodBase.fromJson(json);
     case 'values':
       return MethodValues.fromJson(json);
     case 'binary':
@@ -230,8 +228,8 @@ class _$MethodNodeTearOff {
   const _$MethodNodeTearOff();
 
 // ignore: unused_element
-  _MethodNode call({@required String name}) {
-    return _MethodNode(
+  MethodBase call({@required String name}) {
+    return MethodBase(
       name: name,
     );
   }
@@ -317,7 +315,7 @@ mixin _$MethodNode {
   });
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -325,7 +323,7 @@ mixin _$MethodNode {
   });
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -363,29 +361,28 @@ class _$MethodNodeCopyWithImpl<$Res> implements $MethodNodeCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$MethodNodeCopyWith<$Res> implements $MethodNodeCopyWith<$Res> {
-  factory _$MethodNodeCopyWith(
-          _MethodNode value, $Res Function(_MethodNode) then) =
-      __$MethodNodeCopyWithImpl<$Res>;
+abstract class $MethodBaseCopyWith<$Res> implements $MethodNodeCopyWith<$Res> {
+  factory $MethodBaseCopyWith(
+          MethodBase value, $Res Function(MethodBase) then) =
+      _$MethodBaseCopyWithImpl<$Res>;
   @override
   $Res call({String name});
 }
 
 /// @nodoc
-class __$MethodNodeCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
-    implements _$MethodNodeCopyWith<$Res> {
-  __$MethodNodeCopyWithImpl(
-      _MethodNode _value, $Res Function(_MethodNode) _then)
-      : super(_value, (v) => _then(v as _MethodNode));
+class _$MethodBaseCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
+    implements $MethodBaseCopyWith<$Res> {
+  _$MethodBaseCopyWithImpl(MethodBase _value, $Res Function(MethodBase) _then)
+      : super(_value, (v) => _then(v as MethodBase));
 
   @override
-  _MethodNode get _value => super._value as _MethodNode;
+  MethodBase get _value => super._value as MethodBase;
 
   @override
   $Res call({
     Object name = freezed,
   }) {
-    return _then(_MethodNode(
+    return _then(MethodBase(
       name: name == freezed ? _value.name : name as String,
     ));
   }
@@ -394,13 +391,11 @@ class __$MethodNodeCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_MethodNode extends _MethodNode {
-  const _$_MethodNode({@required this.name})
-      : assert(name != null),
-        super._();
+class _$MethodBase implements MethodBase {
+  const _$MethodBase({@required this.name}) : assert(name != null);
 
-  factory _$_MethodNode.fromJson(Map<String, dynamic> json) =>
-      _$_$_MethodNodeFromJson(json);
+  factory _$MethodBase.fromJson(Map<String, dynamic> json) =>
+      _$_$MethodBaseFromJson(json);
 
   @override
   final String name;
@@ -413,7 +408,7 @@ class _$_MethodNode extends _MethodNode {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _MethodNode &&
+        (other is MethodBase &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)));
   }
@@ -423,8 +418,8 @@ class _$_MethodNode extends _MethodNode {
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(name);
 
   @override
-  _$MethodNodeCopyWith<_MethodNode> get copyWith =>
-      __$MethodNodeCopyWithImpl<_MethodNode>(this, _$identity);
+  $MethodBaseCopyWith<MethodBase> get copyWith =>
+      _$MethodBaseCopyWithImpl<MethodBase>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -469,7 +464,7 @@ class _$_MethodNode extends _MethodNode {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -486,7 +481,7 @@ class _$_MethodNode extends _MethodNode {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -502,21 +497,20 @@ class _$_MethodNode extends _MethodNode {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$_$_MethodNodeToJson(this)..['runtimeType'] = 'default';
+    return _$_$MethodBaseToJson(this)..['runtimeType'] = 'default';
   }
 }
 
-abstract class _MethodNode extends MethodNode {
-  const _MethodNode._() : super._();
-  const factory _MethodNode({@required String name}) = _$_MethodNode;
+abstract class MethodBase implements MethodNode {
+  const factory MethodBase({@required String name}) = _$MethodBase;
 
-  factory _MethodNode.fromJson(Map<String, dynamic> json) =
-      _$_MethodNode.fromJson;
+  factory MethodBase.fromJson(Map<String, dynamic> json) =
+      _$MethodBase.fromJson;
 
   @override
   String get name;
   @override
-  _$MethodNodeCopyWith<_MethodNode> get copyWith;
+  $MethodBaseCopyWith<MethodBase> get copyWith;
 }
 
 /// @nodoc
@@ -554,10 +548,9 @@ class _$MethodValuesCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$MethodValues extends MethodValues {
+class _$MethodValues implements MethodValues {
   const _$MethodValues({@required this.name, this.values})
-      : assert(name != null),
-        super._();
+      : assert(name != null);
 
   factory _$MethodValues.fromJson(Map<String, dynamic> json) =>
       _$_$MethodValuesFromJson(json);
@@ -635,7 +628,7 @@ class _$MethodValues extends MethodValues {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -652,7 +645,7 @@ class _$MethodValues extends MethodValues {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -672,8 +665,7 @@ class _$MethodValues extends MethodValues {
   }
 }
 
-abstract class MethodValues extends MethodNode {
-  const MethodValues._() : super._();
+abstract class MethodValues implements MethodNode {
   const factory MethodValues({@required String name, List<MethodNode> values}) =
       _$MethodValues;
 
@@ -749,7 +741,7 @@ class _$MethodBinaryCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$MethodBinary extends MethodBinary {
+class _$MethodBinary implements MethodBinary {
   const _$MethodBinary(
       {@required this.name,
       @required this.left,
@@ -758,8 +750,7 @@ class _$MethodBinary extends MethodBinary {
       : assert(name != null),
         assert(left != null),
         assert(right != null),
-        assert(operation != null),
-        super._();
+        assert(operation != null);
 
   factory _$MethodBinary.fromJson(Map<String, dynamic> json) =>
       _$_$MethodBinaryFromJson(json);
@@ -848,7 +839,7 @@ class _$MethodBinary extends MethodBinary {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -865,7 +856,7 @@ class _$MethodBinary extends MethodBinary {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -885,8 +876,7 @@ class _$MethodBinary extends MethodBinary {
   }
 }
 
-abstract class MethodBinary extends MethodNode {
-  const MethodBinary._() : super._();
+abstract class MethodBinary implements MethodNode {
   const factory MethodBinary(
       {@required String name,
       @required MethodNode left,
@@ -945,13 +935,12 @@ class _$MethodConstructorCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$MethodConstructor extends MethodConstructor {
+class _$MethodConstructor implements MethodConstructor {
   const _$MethodConstructor(
       {@required this.name, @required this.value, this.arguments = const {}})
       : assert(name != null),
         assert(value != null),
-        assert(arguments != null),
-        super._();
+        assert(arguments != null);
 
   factory _$MethodConstructor.fromJson(Map<String, dynamic> json) =>
       _$_$MethodConstructorFromJson(json);
@@ -1036,7 +1025,7 @@ class _$MethodConstructor extends MethodConstructor {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -1053,7 +1042,7 @@ class _$MethodConstructor extends MethodConstructor {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -1073,8 +1062,7 @@ class _$MethodConstructor extends MethodConstructor {
   }
 }
 
-abstract class MethodConstructor extends MethodNode {
-  const MethodConstructor._() : super._();
+abstract class MethodConstructor implements MethodNode {
   const factory MethodConstructor(
       {@required String name,
       @required String value,
@@ -1126,11 +1114,10 @@ class _$MethodSimpleCopyWithImpl<$Res> extends _$MethodNodeCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$MethodSimple extends MethodSimple {
+class _$MethodSimple implements MethodSimple {
   const _$MethodSimple({@required this.name, @required this.value})
       : assert(name != null),
-        assert(value != null),
-        super._();
+        assert(value != null);
 
   factory _$MethodSimple.fromJson(Map<String, dynamic> json) =>
       _$_$MethodSimpleFromJson(json);
@@ -1208,7 +1195,7 @@ class _$MethodSimple extends MethodSimple {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     @required Result values(MethodValues value),
     @required Result binary(MethodBinary value),
     @required Result constructor(MethodConstructor value),
@@ -1225,7 +1212,7 @@ class _$MethodSimple extends MethodSimple {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>(
-    Result $default(_MethodNode value), {
+    Result $default(MethodBase value), {
     Result values(MethodValues value),
     Result binary(MethodBinary value),
     Result constructor(MethodConstructor value),
@@ -1245,8 +1232,7 @@ class _$MethodSimple extends MethodSimple {
   }
 }
 
-abstract class MethodSimple extends MethodNode {
-  const MethodSimple._() : super._();
+abstract class MethodSimple implements MethodNode {
   const factory MethodSimple({@required String name, @required dynamic value}) =
       _$MethodSimple;
 

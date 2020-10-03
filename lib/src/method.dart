@@ -1,269 +1,226 @@
 import 'package:flutter_ast_core/flutter_ast_core.dart';
 
 import 'analyzer.dart';
-import 'index.dart';
+import 'class.dart';
+import 'core.dart';
 
-class DartMethod {
-  DartMethod();
-
-  String name;
-  final List<DartProperty> parameters = [];
-  TreeValue body = NodeValue();
-
-  factory DartMethod.fromNode(MethodDeclarationImpl root, DartClass parent) {
-    final base = DartMethod();
-    base.name = root.name.toString();
-    base.body = _check(root);
-    return base;
-  }
-
-  factory DartMethod.fromBlock(FunctionBodyImpl root, DartClass parent) {
-    final base = DartMethod();
-    base.name = null;
-    base.body = _check(root);
-    return base;
-  }
-
-  factory DartMethod.fromTopLevelNode(FunctionDeclarationImpl root) {
-    final base = DartMethod();
-    base.name = root.name.toString();
-    base.body = _check(root);
-    return base;
-  }
-
-  static TreeValue _check(SyntacticEntity node) {
-    if (node is FunctionDeclarationImpl) {
-      return _processFunctionDeclaration(node);
-    }
-    if (node is MethodDeclarationImpl) {
-      return _processMethodDeclarationImpl(node);
-    }
-    if (node is FunctionExpressionImpl) {
-      return _processFunction(node);
-    }
-    if (node is DeclaredSimpleIdentifier) {
-      return _processDeclaration(node);
-    }
-    if (node is MethodInvocationImpl) {
-      return _processMethod(node);
-    }
-    if (node is ReturnStatementImpl) {
-      return _processReturn(node);
-    }
-    if (node is IfStatementImpl) {
-      return _processIfStatement(node);
-    }
-    if (node is ConditionalExpressionImpl) {
-      return _processConditional(node);
-    }
-    if (node is BlockFunctionBodyImpl) {
-      return _processBlockBody(node);
-    }
-    if (node is BlockImpl) {
-      return _processBlock(node);
-    }
-    if (node is BinaryExpressionImpl) {
-      return _processBinary(node);
-    }
-    if (node is SimpleIdentifierImpl) {
-      return Simple.value('name', node.name);
-    }
-    if (node is LiteralImpl) {
-      return Simple.value('value', processLiteralValue(node));
-    }
-    if (node is TypeNameImpl) {
-      return Simple.value('type', node.toString());
-    }
-    return null;
-  }
-
-  static TreeValue _processFunctionDeclaration(FunctionDeclarationImpl node) {
-    final parent = NodeValue();
-    parent.name = 'function_declaration';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processMethodDeclarationImpl(MethodDeclarationImpl node) {
-    final parent = NodeValue();
-    parent.name = 'method_declaration';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processIfStatement(IfStatementImpl node) {
-    final parent = NodeValue();
-    parent.name = 'if';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processFunction(FunctionExpressionImpl node) {
-    final parent = NodeValue();
-    parent.name = 'function';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processDeclaration(DeclaredSimpleIdentifier node) {
-    final parent = NodeValue();
-    parent.name = 'declaration';
-    // Check name meta getter/setter
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processMethod(MethodInvocationImpl node) {
-    final parent = ConstructorValue();
-    parent.name = 'constructor';
-    parent.value = node.methodName.name;
-    final args = node.argumentList;
-    for (var i = 0; i < args.arguments.length; i++) {
-      final arg = args.arguments[i];
-      if (arg is LiteralImpl) {
-        parent.arguments['$i'] = Simple.value(
-          'value',
-          processLiteralValue(arg),
-        );
-      }
-      if (arg is NamedExpressionImpl) {
-        parent.arguments[arg.name.label.toString()] = _check(arg.expression);
-      }
-    }
-    return parent;
-  }
-
-  static TreeValue _processBinary(BinaryExpressionImpl node) {
-    final output = BinaryValue();
-    output.name = 'binary';
-    final _children = node.childEntities.toList();
-    output.leftSide = _check(_children[0]);
-    output.operation = _children[1].toString();
-    output.rightSide = _check(_children[2]);
-    return output;
-  }
-
-  static TreeValue _processConditional(ConditionalExpressionImpl node) {
-    final parent = NodeValue();
-    parent.name = 'conditional';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processReturn(ReturnStatementImpl node) {
-    final parent = NodeValue();
-    parent.name = 'return';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processBlock(BlockImpl node) {
-    final parent = NodeValue();
-    parent.name = 'block';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static TreeValue _processBlockBody(BlockFunctionBodyImpl node) {
-    final parent = NodeValue();
-    parent.name = 'block_body';
-    for (final child in node.childEntities) {
-      _checkAndAdd(child, parent);
-    }
-    return parent;
-  }
-
-  static void _checkAndAdd(SyntacticEntity child, NodeValue parent) {
-    final _value = _check(child);
-    if (parent.name != null && _value != null && _value.name != null) {
-      parent.values.add(_value);
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'body': body,
-      'parameters': parameters,
-    };
+extension MethodDeclarationImplUtils on MethodDeclarationImpl {
+  DartMethod toDartMethod(DartClass parent) {
+    return DartMethod(
+      name: this.name.toString(),
+      body: _check(this),
+    );
   }
 }
 
-abstract class TreeValue {
-  String name;
-  dynamic toJson();
-}
-
-class NodeValue extends TreeValue {
-  String name;
-  final List<TreeValue> values = [];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'values': values,
-    };
+extension FunctionBodyImplUtils on FunctionBodyImpl {
+  DartMethod toDartMethod(DartClass parent) {
+    return DartMethod(
+      name: null,
+      body: _check(this),
+    );
   }
 }
 
-class BinaryValue extends TreeValue {
-  String name;
-  TreeValue leftSide, rightSide;
-  String operation;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'left': leftSide,
-      'right': rightSide,
-      'operation': operation,
-    };
+extension FunctionDeclarationImplUtils on FunctionDeclarationImpl {
+  DartMethod toDartMethod() {
+    return DartMethod(
+      name: this.name.toString(),
+      body: _check(this),
+    );
   }
 }
 
-class ConstructorValue extends TreeValue {
-  String name, value;
-  final Map<String, TreeValue> arguments = {};
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'value': value,
-      'arguments': arguments,
-    };
+MethodNode _check(SyntacticEntity node) {
+  if (node is FunctionDeclarationImpl) {
+    return _processFunctionDeclaration(node);
   }
+  if (node is MethodDeclarationImpl) {
+    return _processMethodDeclarationImpl(node);
+  }
+  if (node is FunctionExpressionImpl) {
+    return _processFunction(node);
+  }
+  if (node is DeclaredSimpleIdentifier) {
+    return _processDeclaration(node);
+  }
+  if (node is MethodInvocationImpl) {
+    return _processMethod(node);
+  }
+  if (node is ReturnStatementImpl) {
+    return _processReturn(node);
+  }
+  if (node is IfStatementImpl) {
+    return _processIfStatement(node);
+  }
+  if (node is ConditionalExpressionImpl) {
+    return _processConditional(node);
+  }
+  if (node is BlockFunctionBodyImpl) {
+    return _processBlockBody(node);
+  }
+  if (node is BlockImpl) {
+    return _processBlock(node);
+  }
+  if (node is BinaryExpressionImpl) {
+    return _processBinary(node);
+  }
+  if (node is SimpleIdentifierImpl) {
+    return MethodNode.simple(
+      name: 'name',
+      value: node.name,
+    );
+  }
+  if (node is LiteralImpl) {
+    return MethodNode.simple(
+      name: 'value',
+      value: processLiteralValue(node),
+    );
+  }
+  if (node is TypeNameImpl) {
+    return MethodNode.simple(
+      name: 'type',
+      value: node.toString(),
+    );
+  }
+  return null;
 }
 
-class Simple extends TreeValue {
-  String name;
-  dynamic value;
+MethodNode _processFunctionDeclaration(FunctionDeclarationImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'function_declaration',
+    values: values,
+  );
+}
 
-  Simple.value(this.name, this.value);
+MethodNode _processMethodDeclarationImpl(MethodDeclarationImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'method_declaration',
+    values: values,
+  );
+}
 
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'props': {
-        '0': value,
-      }
-    };
+MethodNode _processIfStatement(IfStatementImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'if',
+    values: values,
+  );
+}
+
+MethodNode _processFunction(FunctionExpressionImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'function',
+    values: values,
+  );
+}
+
+MethodNode _processDeclaration(DeclaredSimpleIdentifier node) {
+  final List<MethodNode> values = [];
+  // Check name meta getter/setter
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'declaration',
+    values: values,
+  );
+}
+
+MethodNode _processMethod(MethodInvocationImpl node) {
+  final Map<String, MethodNode> arguments = {};
+  final args = node.argumentList;
+  for (var i = 0; i < args.arguments.length; i++) {
+    final arg = args.arguments[i];
+    if (arg is LiteralImpl) {
+      arguments['$i'] = MethodNode.simple(
+        name: 'value',
+        value: processLiteralValue(arg),
+      );
+    }
+    if (arg is NamedExpressionImpl) {
+      arguments[arg.name.label.toString()] = _check(arg.expression);
+    }
+  }
+  return MethodNode.constructor(
+    name: 'constructor',
+    value: node.methodName.name,
+    arguments: arguments,
+  );
+}
+
+MethodNode _processBinary(BinaryExpressionImpl node) {
+  final _children = node.childEntities.toList();
+  return MethodNode.binary(
+    name: 'binary',
+    left: _check(_children[0]),
+    right: _check(_children[2]),
+    operation: _children[1].toString(),
+  );
+}
+
+MethodNode _processConditional(ConditionalExpressionImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'conditional',
+    values: values,
+  );
+}
+
+MethodNode _processReturn(ReturnStatementImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'return',
+    values: values,
+  );
+}
+
+MethodNode _processBlock(BlockImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'block',
+    values: values,
+  );
+}
+
+MethodNode _processBlockBody(BlockFunctionBodyImpl node) {
+  final List<MethodNode> values = [];
+  for (final child in node.childEntities) {
+    _checkAndAdd(child, values);
+  }
+  return MethodNode.values(
+    name: 'block_body',
+    values: values,
+  );
+}
+
+void _checkAndAdd(SyntacticEntity child, List<MethodNode> values) {
+  final _value = _check(child);
+  if (_value != null && _value.name != null) {
+    values.add(_value);
   }
 }

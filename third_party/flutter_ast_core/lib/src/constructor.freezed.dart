@@ -113,11 +113,10 @@ class __$DartConstructorCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_DartConstructor extends _DartConstructor {
+class _$_DartConstructor implements _DartConstructor {
   const _$_DartConstructor({@required this.name, this.properties = const []})
       : assert(name != null),
-        assert(properties != null),
-        super._();
+        assert(properties != null);
 
   factory _$_DartConstructor.fromJson(Map<String, dynamic> json) =>
       _$_$_DartConstructorFromJson(json);
@@ -160,8 +159,7 @@ class _$_DartConstructor extends _DartConstructor {
   }
 }
 
-abstract class _DartConstructor extends DartConstructor {
-  const _DartConstructor._() : super._();
+abstract class _DartConstructor implements DartConstructor {
   const factory _DartConstructor(
       {@required String name,
       List<DartProperty> properties}) = _$_DartConstructor;

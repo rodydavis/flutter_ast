@@ -6,9 +6,7 @@ part 'method.freezed.dart';
 part 'method.g.dart';
 
 @freezed
-abstract class DartMethod implements _$DartMethod {
-  const DartMethod._();
-
+abstract class DartMethod with _$DartMethod {
   const factory DartMethod({
     @required String name,
     @Default([]) List<DartProperty> parameters,
@@ -20,12 +18,10 @@ abstract class DartMethod implements _$DartMethod {
 }
 
 @freezed
-abstract class MethodNode implements _$MethodNode {
-  const MethodNode._();
-
+abstract class MethodNode with _$MethodNode {
   const factory MethodNode({
     @required String name,
-  }) = _MethodNode;
+  }) = MethodBase;
 
   const factory MethodNode.values({
     @required String name,

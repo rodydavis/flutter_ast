@@ -19,7 +19,7 @@ class DartFile {
     }
     for (final node
         in root.childEntities.whereType<FunctionDeclarationImpl>()) {
-      base.methods.add(DartMethod.fromTopLevelNode(node));
+      base.methods.add(node.toDartMethod());
     }
     for (final node in root.childEntities.whereType<ClassDeclarationImpl>()) {
       final ClassDeclarationImpl _node = node;

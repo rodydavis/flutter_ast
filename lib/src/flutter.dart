@@ -1,3 +1,5 @@
+import 'package:flutter_ast_core/flutter_ast_core.dart';
+
 import 'analyzer.dart';
 import 'index.dart';
 
@@ -14,15 +16,14 @@ class FlutterClass extends DartClass {
     base.methods.addAll(dartClass.methods);
     bool _hasBuildMethod = false;
     for (final node in root.childEntities.whereType<MethodDeclarationImpl>()) {
-      final _name = DartMethod.fromNode(node, base);
+      final _name = node.toDartMethod(base);
       if (_name.name == 'build') {
         _hasBuildMethod = true;
       }
       if (_hasBuildMethod) {
         for (final sub in node.childEntities) {
-          
           if (sub is FunctionBodyImpl) {
-            base.tree = DartMethod.fromBlock(sub, base);
+            base.tree = sub.toDartMethod(base);
           }
         }
       }

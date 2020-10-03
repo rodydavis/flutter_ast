@@ -4,9 +4,7 @@ part 'core.freezed.dart';
 part 'core.g.dart';
 
 @freezed
-abstract class DartCore implements _$DartCore {
-  const DartCore._();
-
+abstract class DartCore with _$DartCore {
   const factory DartCore({
     @required String type,
     @required String value,
@@ -39,12 +37,6 @@ abstract class DartCore implements _$DartCore {
 
   factory DartCore.fromJson(Map<String, dynamic> json) =>
       _$DartCoreFromJson(json);
-
-  String toCode() {
-    final sb = StringBuffer();
-    // sb.write('${this.value}');
-    return sb.toString();
-  }
 }
 
 extension FieldUtils on DartField {

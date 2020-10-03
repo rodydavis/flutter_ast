@@ -102,11 +102,10 @@ class __$DartEnumCopyWithImpl<$Res> extends _$DartEnumCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_DartEnum extends _DartEnum {
+class _$_DartEnum implements _DartEnum {
   const _$_DartEnum({@required this.name, @required this.values})
       : assert(name != null),
-        assert(values != null),
-        super._();
+        assert(values != null);
 
   factory _$_DartEnum.fromJson(Map<String, dynamic> json) =>
       _$_$_DartEnumFromJson(json);
@@ -147,8 +146,7 @@ class _$_DartEnum extends _DartEnum {
   }
 }
 
-abstract class _DartEnum extends DartEnum {
-  const _DartEnum._() : super._();
+abstract class _DartEnum implements DartEnum {
   const factory _DartEnum(
       {@required String name, @required List<String> values}) = _$_DartEnum;
 

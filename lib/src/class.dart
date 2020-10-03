@@ -18,7 +18,7 @@ class DartClass {
       base.constructors.add(item.toDartConstructor(base));
     }
     for (final item in root.childEntities.whereType<MethodDeclarationImpl>()) {
-      base.methods.add(DartMethod.fromNode(item, base));
+      base.methods.add(item.toDartMethod(base));
     }
     for (final item in root.childEntities.whereType<CommentImpl>()) {
       base.comments.add(item.toDartComment());

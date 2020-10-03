@@ -100,10 +100,8 @@ class __$DartCommentCopyWithImpl<$Res> extends _$DartCommentCopyWithImpl<$Res>
 @JsonSerializable()
 
 /// @nodoc
-class _$_DartComment extends _DartComment {
-  const _$_DartComment({this.lines = const []})
-      : assert(lines != null),
-        super._();
+class _$_DartComment implements _DartComment {
+  const _$_DartComment({this.lines = const []}) : assert(lines != null);
 
   factory _$_DartComment.fromJson(Map<String, dynamic> json) =>
       _$_$_DartCommentFromJson(json);
@@ -139,8 +137,7 @@ class _$_DartComment extends _DartComment {
   }
 }
 
-abstract class _DartComment extends DartComment {
-  const _DartComment._() : super._();
+abstract class _DartComment implements DartComment {
   const factory _DartComment({List<String> lines}) = _$_DartComment;
 
   factory _DartComment.fromJson(Map<String, dynamic> json) =
