@@ -1,0 +1,29 @@
+{{#imports}}
+{{path}}
+{{/imports}}
+
+{{#classes}}
+class {{class}}Base extends BaseWidget {
+    {{class}}Base();
+
+    factory {{class}}Base.fromJson(Map<String, dynamic> data) {
+        return {{class}}Base();
+    }
+
+    @override
+    String get description => r'''
+{{description}}
+''';
+
+    @override
+    Map<String, dynamic> toJson() {
+        return {};
+    }
+
+    @override
+    Widget render(BuildContext context) {
+        return Container();
+    }
+}
+
+{{/classes}}
