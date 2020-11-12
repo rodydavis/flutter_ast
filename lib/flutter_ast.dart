@@ -46,3 +46,26 @@ extension AnalysisErrorUtils on AnalysisError {
     };
   }
 }
+
+void printMembers(CompilationUnit unit) {
+  for (CompilationUnitMember unitMember in unit.declarations) {
+    if (unitMember is ClassDeclaration) {
+      print(unitMember.name.name);
+      for (ClassMember classMember in unitMember.members) {
+        if (classMember is MethodDeclaration) {
+          print('  ${classMember.name}');
+        } else if (classMember is FieldDeclaration) {
+          for (VariableDeclaration field in classMember.fields.variables) {
+            print('  ${field.name.name}');
+          }
+        } else if (classMember is ConstructorDeclaration) {
+          if (classMember.name == null) {
+            print('  ${unitMember.name.name}');
+          } else {
+            print('  ${unitMember.name.name}.${classMember.name.name}');
+          }
+        }
+      }
+    }
+  }
+}
