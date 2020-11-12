@@ -1,7 +1,6 @@
 import 'package:flutter_ast_core/flutter_ast_core.dart';
 
 import 'analyzer.dart';
-import 'class.dart';
 import 'core.dart';
 
 extension MethodDeclarationImplUtils on MethodDeclarationImpl {

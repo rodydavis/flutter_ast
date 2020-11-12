@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter_ast_core/flutter_ast_core.dart';
 import 'package:path/path.dart' as p;
-import 'dart:convert';
 
 import 'package:build_cli_annotations/build_cli_annotations.dart';
 import "package:console/console.dart";
 import 'package:flutter_ast/flutter_ast.dart';
 import 'package:mustache_template/mustache_template.dart';
+import 'package:recase/recase.dart';
 
 part 'generator.g.dart';
 
@@ -37,6 +37,7 @@ class Options {
 const kBasePath =
     '/Users/rodydavis/Developer/GitHub/protoypes/widget_studio/third_party/flutter_dynamic_widget/third_party/flutter_ast';
 
+final cache = Cache();
 // dart ./bin/flutter_gen.dart -p /Users/rodydavis/Developer/GitHub/protoypes/widget_studio/third_party/flutter/packages/flutter/lib/src/material
 void main(List<String> args) {
   Console.init();
@@ -56,9 +57,9 @@ void main(List<String> args) {
   final template = _getTemplate('widget');
   var progress = ProgressBar(complete: _paths.length);
   var i = 0;
-  final _cache = <String, DartResult>{};
+
   for (final path in _paths) {
-    _processFile(output, File(path), template, _cache);
+    _processFile(output, File(path), template);
     progress.update(++i);
   }
   // final _types = <String>{};
@@ -85,10 +86,11 @@ void main(List<String> args) {
   // }
   _getFile(output.path, 'base.dart').writeAsStringSync(_base);
   final files = Directory(p.join(output.path, 'classes')).listSync();
-  _getFile(output.path, 'index.dart').writeAsStringSync(files
+  final imports = files
       .map((item) => "export 'classes/${p.basename(item.path)}';")
-      .toList()
-      .join('\n'));
+      .toList();
+  imports.sort();
+  _getFile(output.path, 'index.dart').writeAsStringSync(imports.join('\n'));
   final sb = StringBuffer();
   sb.writeln("import 'index.dart';");
   sb.writeln("import 'base.dart';");
@@ -96,9 +98,10 @@ void main(List<String> args) {
   sb.writeln("Map<String, BaseWidget> widgetLibrary = {");
   final List<String> _names = [];
   for (final file in files) {
-    final _result = _cache[p.basename(file.path)];
+    final _result = cache.getCache(p.basename(file.path));
+    if (_result == null) continue;
     for (final item in _result.file.classes) {
-      if (item.isWidget && !item.name.startsWith('_')) {
+      if (item.isValid) {
         _names.add(item.name);
       }
     }
@@ -124,8 +127,12 @@ Template _getTemplate(String name) {
 }
 
 void _processDirectory(
-    Directory dir, Directory input, Directory output, List<String> paths) {
-  for (final file in dir.listSync()) {
+  Directory dir,
+  Directory input,
+  Directory output,
+  List<String> paths,
+) {
+  for (final file in dir.listSync(recursive: true)) {
     if (file is Directory) {
       _processDirectory(file, input, output, paths);
     } else {
@@ -134,50 +141,44 @@ void _processDirectory(
   }
 }
 
-void _processFile(
-  Directory output,
-  File input,
-  Template template,
-  Map<String, DartResult> cache,
-) {
+void _processFile(Directory output, File input, Template template) {
   final source = input.readAsStringSync();
   final result = parseSource(source, input.path);
-  cache[p.basename(input.path)] = result;
+  cache.setCache(p.basename(input.path), result);
   final _base = result.file;
-  final _template = <String, dynamic>{};
-  _template['imports'] = [];
-  _template['classes'] = [];
   if (_base?.classes != null && _base.classes.isNotEmpty) {
     for (final item in _base.classes) {
-      if (item.isWidget) {
-        _processClass(item, input, _template);
+      if (item.isValid) {
+        if (!cache.addName(item.name)) continue;
+        final _template = _processClass(item, input);
+        if (_template == null) continue;
+        // final _basePath = p.basenameWithoutExtension(input.path);
+        final name = ReCase(item.name).snakeCase;
+        final _path = 'classes/' + name + '.dart';
+        final _file = _getFile(output.path, _path);
+        final _output = template.renderString(_template);
+        if (_output.trim().isEmpty) {
+          _file.deleteSync();
+          return;
+        }
+        _file.writeAsStringSync(_output);
       }
     }
-    final _basePath = p.basenameWithoutExtension(input.path);
-    final _path = 'classes/' + _basePath + '.dart';
-    final _file = _getFile(output.path, _path);
-    final _output = template.renderString(_template);
-    if (_output.trim().isEmpty) {
-      _file.deleteSync();
-      return;
-    }
-    _file.writeAsStringSync(_output);
   }
 }
 
-void _processClass(
+Map<String, dynamic> _processClass(
   DartClass item,
   File input,
-  Map<String, dynamic> _template,
 ) {
   if (!item.name.startsWith('_') &&
       !input.path.contains('.g.dart') &&
       !item.isAbstract) {
-    _template['imports'] = [
-      {'path': "import '../base.dart';"},
-    ];
     final _comments = item.comments?.map((e) => e.comment)?.toList() ?? [];
     final _root = <String, dynamic>{
+      "imports": [
+        {'path': "import '../base.dart';"},
+      ],
       'class': item.name,
       'constructors': [],
       'fields': [],
@@ -253,18 +254,36 @@ void _processClass(
     //     'value': '${_fields[key]}',
     //   });
     // }
-    _template['classes'].add(_root);
+    return _root;
   }
+  return null;
+}
+
+class Cache {
+  final _files = <String, DartResult>{};
+  final _names = <String>{};
+
+  void setCache(String path, DartResult result) => _files[path] = result;
+  DartResult getCache(String path) => _files[path];
+
+  bool addName(String name) => _names.add(name);
+  List<String> get name => _names.toList();
 }
 
 extension on DartClass {
-  bool get isWidget {
-    final _extends = this?.extendsClause ?? '';
-    if (_extends.contains('StatelessWidget') ||
-        _extends.contains('StatefulWidget')) {
-      return !this.isAbstract;
+  bool get isValid {
+    if (this.name.startsWith('_')) {
+      return false;
     }
-    return false;
+    if (this.isAbstract) {
+      return false;
+    }
+    // final _extends = this?.extendsClause ?? '';
+    // if (_extends.contains('StatelessWidget') ||
+    //     _extends.contains('StatefulWidget')) {
+    //   return true;
+    // }
+    return true;
   }
 }
 

@@ -2,7 +2,6 @@
 {{path}}
 {{/imports}}
 
-{{#classes}}
 class {{class}}Base extends BaseWidget {
     {{class}}Base();
 
@@ -11,9 +10,9 @@ class {{class}}Base extends BaseWidget {
     }
 
     @override
-    String get description => r'''
+    String get description => r"""
 {{description}}
-''';
+""";
 
     @override
     Map<String, dynamic> toJson() {
@@ -25,5 +24,3 @@ class {{class}}Base extends BaseWidget {
         return Container();
     }
 }
-
-{{/classes}}

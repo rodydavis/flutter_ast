@@ -9,7 +9,7 @@ extension DartCommentUtils on CommentImpl {
     for (final child in this.childEntities) {
       final _desc = child.toString();
       if (_desc.contains('///')) {
-        final line = _desc.replaceFirst('///', '').trim();
+        final line = _desc.replaceFirst('/// ', '').replaceFirst('///', '');
         _lines.add(line);
       }
     }
