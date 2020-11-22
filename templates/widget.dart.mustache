@@ -3,10 +3,38 @@
 {{/imports}}
 
 class {{class}}Base extends BaseWidget {
-    {{class}}Base();
+    {{class}}Base({
+        @required this.constructor,
+        {{#fields}}
+        {{type}} {{name}},
+        {{/fields}}
+    }) {{constructor_divider}} 
+    {{#fields}}
+    this._{{name}} = {{name}},
+    {{/fields}}
+    {
+        this.value = this.toJson();
+    }
 
-    factory {{class}}Base.fromJson(Map<String, dynamic> data) {
-        return {{class}}Base();
+    @override
+    final String constructor;
+
+    factory {{class}}Base.fromJson(Map<String, dynamic> data, String constructor) {
+        return {{class}}Base(
+            constructor: constructor,
+            {{#fields}}
+            {{name}}: {{value}},
+            {{/fields}}
+        );
+    }
+
+    factory {{class}}Base.readOnly() {
+        return {{class}}Base(
+            constructor: '{{class}}',
+            {{#fields}}
+            {{name}}: null,
+            {{/fields}}
+        );
     }
 
     @override
@@ -14,13 +42,68 @@ class {{class}}Base extends BaseWidget {
 {{description}}
 """;
 
+    {{#fields}}
+    {{type}} _{{name}};
+    {{/fields}}
+
     @override
-    Map<String, dynamic> toJson() {
-        return {};
+    Map<String, String> get properties => {
+        {{#fields}}
+        '{{key}}': '{{type}}',
+        {{/fields}}
+    };
+
+    @override
+    void setProperty(String name, dynamic value) {
+        switch(name) {
+            {{#fields}}
+            case '{{name}}':
+                this._{{name}} = value;
+                break;
+            {{/fields}}
+            default:
+        }
+        this.value = this.toJson();
+        this.notifyListeners();
     }
 
     @override
-    Widget render(BuildContext context) {
-        return Container();
+    dynamic getProperty(String name) {
+        switch(name) {
+            {{#fields}}
+            case '{{name}}':
+                return this._{{name}};
+            {{/fields}}
+            default:
+        }
+        return null;
     }
+
+    @override
+    Map<String, dynamic> toJson() {
+        return {
+            'name' : '${constructor}',
+            'params': {
+            {{#fields}}
+                '{{key}}': this._{{name}},
+            {{/fields}}
+            }
+        };
+    }
+
+    @override
+    Map<String, Object> flavors(BuildContext context) {
+        return {
+            {{#constructors}}
+            '{{name}}': {{widget}},
+            {{/constructors}}
+        };
+    }
+
+    @override
+    List<String> get constructors => [
+        {{#constructors}}
+            '{{name}}',
+        {{/constructors}}
+    ];
 }

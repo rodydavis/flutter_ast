@@ -6,8 +6,8 @@ import 'index.dart';
 extension ConstructorDeclarationImplUtils on ConstructorDeclarationImpl {
   DartConstructor toDartConstructor(DartClass parent) {
     DartConstructor base;
-    String _name = this.root.toString();
-    for (final node in this.root.childEntities) {
+    String _name = '';
+    for (final node in this.childEntities) {
       if (node is SimpleIdentifierImpl) {
         _name = node.name;
       }
@@ -18,7 +18,7 @@ extension ConstructorDeclarationImplUtils on ConstructorDeclarationImpl {
       if (node is FormalParameterListImpl) {
         for (final child in node.childEntities) {
           if (child is DefaultFormalParameterImpl) {
-            final _props = base.properties;
+            final _props = List<DartProperty>.from(base.properties);
             _props.add(child.toDartProperty(parent.fields));
             base = base.copyWith(properties: _props);
           }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_ast_core/flutter_ast_core.dart';
 import 'package:path/path.dart' as p;
@@ -62,28 +63,6 @@ void main(List<String> args) {
     _processFile(output, File(path), template);
     progress.update(++i);
   }
-  // final _types = <String>{};
-  // for (final key in _cache.keys) {
-  //   final _result = _cache[key];
-  //   // for (final field in _result.file.fields) {
-  //   //   _types.add(field.type);
-  //   // }
-  //   for (final item in _result.file.classes) {
-  //     for (final sub in item?.constructors) {
-  //       //     for (final prop in sub?.properties) {
-  //       //       _types.add(prop.type);
-  //       //     }
-  //     }
-  //   }
-  // }
-  // for (var type in _types) {
-  //   type ??= 'null';
-  //   if (type.startsWith('_')) continue;
-  //   _writeTemplate('object', output.path, 'types/${type.toLowerCase()}.dart', {
-  //     'type': type,
-  //     'name': ReCase(type).pascalCase,
-  //   });
-  // }
   _getFile(output.path, 'base.dart').writeAsStringSync(_base);
   final files = Directory(p.join(output.path, 'classes')).listSync();
   final imports = files
@@ -101,14 +80,12 @@ void main(List<String> args) {
     final _result = cache.getCache(p.basename(file.path));
     if (_result == null) continue;
     for (final item in _result.file.classes) {
-      if (item.isValid) {
-        _names.add(item.name);
-      }
+      if (item.isValid) _names.add(item.name);
     }
   }
   _names.sort();
   for (final name in _names) {
-    sb.writeln("  '${name}': ${name}Base(),");
+    sb.writeln("  '${name}': ${name}Base.readOnly(),");
   }
   sb.writeln('};');
   _getFile(output.path, 'library.dart').writeAsStringSync(sb.toString());
@@ -152,7 +129,6 @@ void _processFile(Directory output, File input, Template template) {
         if (!cache.addName(item.name)) continue;
         final _template = _processClass(item, input);
         if (_template == null) continue;
-        // final _basePath = p.basenameWithoutExtension(input.path);
         final name = ReCase(item.name).snakeCase;
         final _path = 'classes/' + name + '.dart';
         final _file = _getFile(output.path, _path);
@@ -186,77 +162,37 @@ Map<String, dynamic> _processClass(
       'comments': _comments,
       'description': _comments.join('/n'),
     };
-    // final _fields = <String, String>{};
-    // final _static = <String, String>{};
-    // for (final field in item.fields) {
-    //   if (field.type == 'Key') continue;
-    //   if (field.name.startsWith('_')) continue;
-    //   if (!field.isFinal) continue;
-    //   _fields[field.name] = field.type;
-    // }
-    // for (final field in item.fields) {
-    //   if (field.isFinal) continue;
-    //   _static[field.name] = field.type;
-    // }
-    // if (item?.constructors != null) {
-    //   if (_template['classes']['fields'].isEmpty) {
-    //     for (final sub in item.constructors) {
-    //       for (final field in sub.properties) {
-    //         if (field.type == 'Key') continue;
-    //         if (field.name.startsWith('_')) continue;
-    //         _fields[field.name] = field.type;
-    //       }
-    //     }
-    //   }
-    //   for (final sub in item.constructors) {
-    //     if (sub.name.startsWith('_')) continue;
-    //     final _baseConst = <String, dynamic>{
-    //       'name': sub.name == item.name ? 'default' : sub.name,
-    //       'className':
-    //           sub.name == item.name ? item.name : '${item.name}.${sub.name}',
-    //       'props': [],
-    //     };
-    //     for (final field in sub.properties) {
-    //       if (field.name.startsWith('_')) continue;
-    //       if (field.type == 'Key') continue;
-    //       _baseConst['props'].add({
-    //         'name': field.name,
-    //         'type': field.type,
-    //         'key': field.name,
-    //         'separator': ':'
-    //       });
-    //     }
-    //     _template['classes']['constructors'].add(_baseConst);
-    //   }
-    // } else {
-    //   _template['classes']['constructors'].add({
-    //     'name': 'default',
-    //     'props': [],
-    //   });
-    // }
-    // _template['classes']['fields'] = [];
-    // for (final key in _fields.keys) {
-    //   if ((_fields[key]?.startsWith('ui.') ?? false) &&
-    //       !_template['imports'].contains('ui.')) {
-    //     _template['imports'].add({'path': "import 'dart:ui' as ui;"});
-    //   }
-    //   _template['classes']['fields'].add({
-    //     'name': key,
-    //     'type': _fields[key],
-    //     'core': 'Core<${_fields[key]}>',
-    //   });
-    // }
-    // for (final key in _static.keys) {
-    //   _template['classes']['static'].add({
-    //     'name': key,
-    //     'type': _fields[key],
-    //     'core': 'Core<${_fields[key]}>',
-    //     'value': '${_fields[key]}',
-    //   });
-    // }
-    return _root;
+    for (final sub in item.constructors) {
+      final isDefault = item.name == sub.name;
+      final _name = isDefault ? '${item.name}' : '${item.name}.${sub.name}';
+      if (_name.startsWith('_') || _name.contains('._')) continue;
+      _root['constructors'].add(buildConstructor(_name, sub));
+    }
+    for (final field in item.fields) {
+      if (field is DartField) {
+        _root['fields'].add({
+          'key': field?.name ?? '',
+          'type': field?.type ?? 'dynamic',
+          'value': field?.value?.value ?? 'null',
+        });
+      }
+    }
+    _root['constructor_divider'] =
+        List.from(_root['fields']).isEmpty ? '' : ':';
+    if (List.from(_root['constructors']).isNotEmpty) return _root;
   }
   return null;
+}
+
+Map<String, dynamic> buildConstructor(String name, DartConstructor item) {
+  return {
+    'name': name,
+    'widget': '$name()',
+    'json': jsonEncode({
+      'name': '$name',
+      'params': {},
+    }),
+  };
 }
 
 class Cache {
@@ -271,19 +207,31 @@ class Cache {
 }
 
 extension on DartClass {
+  String get extendedClasses {
+    final _extends = (this?.extendsClause ?? '').replaceAll('extends ', '');
+    if (_extends.isEmpty) return '';
+    return _extends;
+  }
+
   bool get isValid {
-    if (this.name.startsWith('_')) {
-      return false;
+    if (this.name.startsWith('_')) return false;
+    if (this.isAbstract) return false;
+    if (extendedClasses.isEmpty) return false;
+    if ([
+      'StatelessWidget',
+      'StatefulWidget',
+      'MaterialButton',
+      'InheritedWidget',
+      'InheritedTheme',
+      'InlineSpan',
+      'RenderObjectWidget',
+      'BoxScrollView',
+      'ScrollView',
+      'SingleChildRenderObjectWidget',
+    ].contains(extendedClasses)) {
+      return true;
     }
-    if (this.isAbstract) {
-      return false;
-    }
-    // final _extends = this?.extendsClause ?? '';
-    // if (_extends.contains('StatelessWidget') ||
-    //     _extends.contains('StatefulWidget')) {
-    //   return true;
-    // }
-    return true;
+    return false;
   }
 }
 
@@ -297,13 +245,22 @@ String get _base => '''
 import 'package:flutter/material.dart';
 
 export 'package:flutter/material.dart';
+export 'package:flutter/cupertino.dart' hide RefreshCallback;
 
-abstract class BaseWidget extends Base {
-    Widget render(BuildContext context);
+abstract class BaseWidget extends ValueNotifier<Map<String, dynamic>> implements Base {
+    BaseWidget() : super({});
+    Map<String, Object> flavors(BuildContext context);
+    List<String> get constructors;
+    Map<String, String> get properties;
+    String get constructor;
+    Object render(BuildContext context) => flavors(context)[constructor];
+    bool isWidget(BuildContext context) => render(context) is Widget; 
+    dynamic getProperty(String key);
+    setProperty(String key, dynamic value);
 }
 
 abstract class Base {
-    String get description;
     Map<String, dynamic> toJson();
+    String get description;
 }
 ''';
