@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_ast/src/generator/parser.dart';
 import 'package:flutter_ast_core/flutter_ast_core.dart';
 import 'package:path/path.dart' as p;
 
@@ -58,9 +59,9 @@ void main(List<String> args) {
   final template = _getTemplate('widget');
   var progress = ProgressBar(complete: _paths.length);
   var i = 0;
-
+  final parser = GenParser();
   for (final path in _paths) {
-    _processFile(output, File(path), template);
+    _processFile(output, File(path), template, parser);
     progress.update(++i);
   }
   _getFile(output.path, 'base.dart').writeAsStringSync(_base);
@@ -90,6 +91,7 @@ void main(List<String> args) {
   sb.writeln('};');
   _getFile(output.path, 'library.dart').writeAsStringSync(sb.toString());
   // writeIndex(_paths, output);
+  print(parser.toString());
 }
 
 Template _getTemplate(String name) {
@@ -118,8 +120,10 @@ void _processDirectory(
   }
 }
 
-void _processFile(Directory output, File input, Template template) {
+void _processFile(
+    Directory output, File input, Template template, GenParser parser) {
   final source = input.readAsStringSync();
+  parser.merge(source);
   final result = parseSource(source, input.path);
   cache.setCache(p.basename(input.path), result);
   final _base = result.file;
